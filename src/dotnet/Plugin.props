@@ -10,8 +10,8 @@
     <Copyright></Copyright>
     <PackageTags>mediatr</PackageTags>
 
-    <PackageProjectUrl></PackageProjectUrl>
-    <PackageLicenseUrl></PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/kzryzstof/find-my-handlr</PackageProjectUrl>
+    <PackageLicenseUrl>https://www.gnu.org/licenses/gpl-3.0.en.html</PackageLicenseUrl>
     <PackageIconUrl></PackageIconUrl>
   </PropertyGroup>
 
