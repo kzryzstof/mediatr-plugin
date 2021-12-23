@@ -4,6 +4,7 @@
     <LanguageTargets>$(MSBuildToolsPath)\Microsoft.CSharp.targets</LanguageTargets>
     <LangVersion>default</LangVersion>
     <PackageId>nosuchcompany.find-my-handlr</PackageId>
+    <RootNamespace>NoSuchCompany.ReSharperPlugin.FindMyHandlR</RootNamespace>
   </PropertyGroup>
 
   <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
@@ -26,7 +27,6 @@
   <ItemGroup>
     <Content Include="bin\$(AssemblyName)\$(Configuration)\$(AssemblyName).dll" PackagePath="dotFiles" Pack="true" />
     <Content Include="bin\$(AssemblyName)\$(Configuration)\$(AssemblyName).pdb" PackagePath="dotFiles" Pack="true" />
-
     <!-- TODO: add additional assemblies -->
   </ItemGroup>
 

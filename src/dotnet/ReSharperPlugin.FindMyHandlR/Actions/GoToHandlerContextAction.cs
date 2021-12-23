@@ -29,7 +29,7 @@ namespace ReSharperPlugin.SandboxPlugin.Actions
         Disabled = false,
         Priority = 1
     )]
-    public sealed class GoToHandlerAction : ContextActionBase
+    public sealed class GoToHandlerContextAction : ContextActionBase
     {
         #region Constants
 
@@ -49,7 +49,7 @@ namespace ReSharperPlugin.SandboxPlugin.Actions
 
         #region Fields
 
-        private static readonly ILog GoToHandlerActionLog = Log.GetLog<GoToHandlerAction>();
+        private static readonly ILog GoToHandlerContextActionLog = Log.GetLog<GoToHandlerContextAction>();
 
         #endregion
 
@@ -61,9 +61,9 @@ namespace ReSharperPlugin.SandboxPlugin.Actions
 
         #region Constructors
 
-        public GoToHandlerAction(LanguageIndependentContextActionDataProvider dataProvider)
+        public GoToHandlerContextAction(LanguageIndependentContextActionDataProvider dataProvider)
         {
-            GoToHandlerActionLog.Log(LoggingLevel.WARN, "GoToHandlerActionCalled");
+            GoToHandlerContextActionLog.Log(LoggingLevel.WARN, "GoToHandlerActionCalled");
 
             try
             {
@@ -89,7 +89,7 @@ namespace ReSharperPlugin.SandboxPlugin.Actions
             }
             catch (Exception unhandledException)
             {
-                GoToHandlerActionLog.Log(LoggingLevel.ERROR, unhandledException.ToString());
+                GoToHandlerContextActionLog.Log(LoggingLevel.ERROR, unhandledException.ToString());
             }
         }
 
@@ -146,7 +146,7 @@ namespace ReSharperPlugin.SandboxPlugin.Actions
             }
             catch (Exception unhandledException)
             {
-                GoToHandlerActionLog.Log(LoggingLevel.ERROR, unhandledException.ToString());
+                GoToHandlerContextActionLog.Log(LoggingLevel.ERROR, unhandledException.ToString());
             }
             
             return null;
