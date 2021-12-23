@@ -1,0 +1,25 @@
+<idea-plugin require-restart="true">
+  <id>com.jetbrains.rider.plugins.findmyhandlr</id>
+  <name>FindMyHandlR</name>
+  <version>_PLACEHOLDER_</version>
+  <vendor url="https://project-url">Author</vendor>
+  <idea-version since-build="_PLACEHOLDER_" until-build="_PLACEHOLDER_" />
+  <depends>com.intellij.modules.rider</depends>
+
+  <description>
+<![CDATA[
+<p>Sample description</p>
+]]>
+  </description>
+
+  <extensions defaultExtensionNs="com.intellij">
+    <applicationConfigurable groupId="language" instance="com.jetbrains.rider.plugins.findmyhandlr.SampleOptionsPage" id="SampleOptionsPage" />
+  </extensions>
+
+  <actions>
+    <action id="SampleAction" class="com.jetbrains.rider.plugins.findmyhandlr.SampleAction"
+            text="Do Something" description="Do Something Description">
+    </action>
+  </actions>
+
+</idea-plugin>

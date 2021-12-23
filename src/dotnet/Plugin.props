@@ -1,0 +1,18 @@
+﻿<Project>
+
+  <PropertyGroup>
+    <SdkVersion>2021.3.0</SdkVersion>
+
+    <Title>Find My HandlR</Title>
+    <Description>The Plugin provides the ability to quickly find the MediatR handler corresponding to a given IRequest</Description>
+
+    <Authors>NoSuch Company</Authors>
+    <Copyright></Copyright>
+    <PackageTags>mediatr</PackageTags>
+
+    <PackageProjectUrl></PackageProjectUrl>
+    <PackageLicenseUrl></PackageLicenseUrl>
+    <PackageIconUrl></PackageIconUrl>
+  </PropertyGroup>
+
+</Project>

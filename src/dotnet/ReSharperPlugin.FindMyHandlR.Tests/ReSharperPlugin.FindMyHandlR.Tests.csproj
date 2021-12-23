@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <IsPackable>false</IsPackable>
+    <LangVersion>default</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="JetBrains.ReSharper.SDK.Tests" Version="$(SdkVersion)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ReSharperPlugin.FindMyHandlR\ReSharperPlugin.FindMyHandlR.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="test/**/*" />
+    <None Include="test/**/*" />
+  </ItemGroup>
+
+</Project>
