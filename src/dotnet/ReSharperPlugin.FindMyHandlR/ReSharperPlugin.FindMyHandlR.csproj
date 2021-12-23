@@ -3,6 +3,7 @@
   <PropertyGroup>
     <LanguageTargets>$(MSBuildToolsPath)\Microsoft.CSharp.targets</LanguageTargets>
     <LangVersion>default</LangVersion>
+    <PackageId>nosuchcompany.find-my-handlr</PackageId>
   </PropertyGroup>
 
   <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
