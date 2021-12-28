@@ -10,26 +10,27 @@
 using System;
 using System.Runtime.CompilerServices;
 
-namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR.Diagnostics;
-
-#region Class
-
-internal static class Guard
+namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR.Diagnostics
 {
-    #region Public Methods
+    #region Class
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void ThrowIfIsNull<TObjectType>
-    (
-        TObjectType instance,
-        string instanceName
-    ) where TObjectType : class
+    internal static class Guard
     {
-        if (instance is null)
-            throw new ArgumentNullException(instanceName, $"Parameter {instanceName} is null");
+        #region Public Methods
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void ThrowIfIsNull<TObjectType>
+        (
+            TObjectType instance,
+            string instanceName
+        ) where TObjectType : class
+        {
+            if (instance is null)
+                throw new ArgumentNullException(instanceName, $"Parameter {instanceName} is null");
+        }
+
+        #endregion
     }
 
     #endregion
 }
-
-#endregion

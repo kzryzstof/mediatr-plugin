@@ -15,32 +15,33 @@ using JetBrains.ReSharper.Psi.Files;
 using JetBrains.Util;
 using JetBrains.Util.DataStructures;
 
-namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR.ReSharper.Psi;
-
-#region Class
-
-internal static class DeclaredElementExtensions
+namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR.ReSharper.Psi
 {
-    #region Public Methods
+    #region Class
 
-    public static (bool found, ICSharpFile? csharpFile) FindCSharpFile(this IDeclaredElement declaredElement)
+    internal static class DeclaredElementExtensions
     {
-        HybridCollection<IPsiSourceFile> sourceFiles = declaredElement.GetSourceFiles();
+        #region Public Methods
 
-        var sourceFile = sourceFiles.First() as IPsiProjectFile;
+        public static (bool found, ICSharpFile? csharpFile) FindCSharpFile(this IDeclaredElement declaredElement)
+        {
+            HybridCollection<IPsiSourceFile> sourceFiles = declaredElement.GetSourceFiles();
 
-        if (sourceFile is null)
-            return (false, null);
+            var sourceFile = sourceFiles.First() as IPsiProjectFile;
 
-        ICSharpFile? csharpFile = sourceFile
-            .GetPsiFiles<CSharpLanguage>()
-            .SafeOfType<ICSharpFile>()
-            .SingleOrDefault();
+            if (sourceFile is null)
+                return (false, null);
 
-        return (csharpFile is not null, csharpFile);
+            ICSharpFile? csharpFile = sourceFile
+                .GetPsiFiles<CSharpLanguage>()
+                .SafeOfType<ICSharpFile>()
+                .SingleOrDefault();
+
+            return (csharpFile is not null, csharpFile);
+        }
+
+        #endregion
     }
 
     #endregion
 }
-
-#endregion

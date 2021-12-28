@@ -10,17 +10,18 @@
 using System;
 using JetBrains.TextControl;
 
-namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR;
-
-#region Class
-
-internal static class DefaultActions
+namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR
 {
-    #region Constants
+    #region Class
 
-    public static readonly Action<ITextControl> Empty = _ => { };
+    internal static class DefaultActions
+    {
+        #region Constants
+
+        public static readonly Action<ITextControl> Empty = _ => { };
+
+        #endregion
+    }
 
     #endregion
 }
-
-#endregion
