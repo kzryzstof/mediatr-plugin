@@ -1,246 +1,196 @@
+// ==========================================================================
+// Copyright (C) 2021 by NoSuch Company.
+// All rights reserved.
+// May be used only in accordance with a valid Source Code License Agreement.
+// 
+// Last change: 28/12/2021 @ 09:14
+// Last author: Christophe Commeyne
+// ==========================================================================
+
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using JetBrains.Application.Progress;
 using JetBrains.Diagnostics;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Feature.Services.ContextActions;
 using JetBrains.ReSharper.Feature.Services.Navigation.NavigationExtensions;
 using JetBrains.ReSharper.Psi;
-using JetBrains.ReSharper.Psi.CSharp;
 using JetBrains.ReSharper.Psi.CSharp.Tree;
-using JetBrains.ReSharper.Psi.Files;
-using JetBrains.ReSharper.Psi.Paths;
-using JetBrains.ReSharper.Psi.Resolve;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.TextControl;
 using JetBrains.Util;
-using JetBrains.Util.DataStructures;
+using NoSuchCompany.ReSharperPlugin.FindMyHandlR.Diagnostics;
+using NoSuchCompany.ReSharperPlugin.FindMyHandlR.ReSharper.Psi;
+using NoSuchCompany.ReSharperPlugin.FindMyHandlR.ReSharper.Psi.Tree;
+using NoSuchCompany.ReSharperPlugin.FindMyHandlR.Services;
 
-namespace ReSharperPlugin.SandboxPlugin.Actions
+namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR.Actions;
+
+#region Class
+
+[ContextAction
+(
+    Name = "Find my HandlR",
+    Description = "Looks for the MediatR handler matching the selected request",
+    Group = "C#",
+    Disabled = false,
+    Priority = 1
+)]
+public sealed class GoToHandlerAction : ContextActionBase
 {
-    #region Classes
+    #region Constants
 
-    [ContextAction
-    (
-        Name = "Find my HandlR",
-        Description = "Looks for the MediatR handler matching the selected request",
-        Group = "C#",
-        Disabled = false,
-        Priority = 1
-    )]
-    public sealed class GoToHandlerAction : ContextActionBase
+    private readonly IMediatR _mediatR;
+
+    private readonly IIdentifier _mediatrRequestIdentifier;
+
+    #endregion
+
+    #region Properties
+
+    public override string Text => "Find my HandlR!";
+
+    #endregion
+
+    #region Constructors
+
+    /// <param name="dataProvider"></param>
+    /// <param name="mediatR"></param>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown if:
+    /// - The <paramref name="dataProvider" /> instance is null.
+    /// - The <paramref name="mediatR" /> instance is null.
+    /// </exception>
+    internal GoToHandlerAction(LanguageIndependentContextActionDataProvider dataProvider, IMediatR mediatR)
     {
-        #region Constants
+        Guard.ThrowIfIsNull(dataProvider, nameof(dataProvider));
+        Guard.ThrowIfIsNull(mediatR, nameof(mediatR));
 
-        private readonly IDeclaredElement? _mediatrAsyncRequestHandlerDeclaredElement;
+        _mediatR = mediatR;
+        _mediatrRequestIdentifier = GetSelectedMediatrRequest(dataProvider);
+    }
 
-        private readonly IDeclaredElement? _mediatrRequestHandlerDeclaredElement;
+    /// <param name="dataProvider"></param>
+    public GoToHandlerAction(LanguageIndependentContextActionDataProvider dataProvider)
+        : this(dataProvider, new MediatR())
+    {
+    }
 
-        private readonly IType _mediatrRequestType;
+    #endregion
 
-        private readonly IType _mediatrRequestWithResponseType;
+    #region Public Methods
 
-        private readonly IDeclaredType? _selectedDeclaredType;
+    /// <summary>
+    /// Finds out whether the selected type implements MediatR's 'IBaseRequest'.
+    /// </summary>
+    /// <param name="_"></param>
+    /// <returns></returns>
+    public override bool IsAvailable(IUserDataHolder _)
+    {
+        return _mediatrRequestIdentifier is not NullIdentifier;
+    }
 
-        private readonly IIdentifier? _selectedTreeNode;
+    #endregion
 
-        #endregion
+    #region Protected Methods
 
-        #region Fields
-
-        private static readonly ILog GoToHandlerActionLog = Log.GetLog<GoToHandlerAction>();
-
-        #endregion
-
-        #region Properties
-
-        public override string Text => "Find my HandlR!";
-
-        #endregion
-
-        #region Constructors
-
-        public GoToHandlerAction(LanguageIndependentContextActionDataProvider dataProvider)
+    protected override Action<ITextControl> ExecutePsiTransaction(ISolution solution, IProgressIndicator progress)
+    {
+        try
         {
-            GoToHandlerActionLog.Log(LoggingLevel.WARN, "GoToHandlerActionCalled");
+            Logger.Instance.Log(LoggingLevel.WARN, $"Looking for a possible MediatR handler that is using the type '{_mediatrRequestIdentifier.Name}'");
 
-            try
-            {
-                _selectedTreeNode = dataProvider.GetSelectedElement<ITreeNode>() as IIdentifier;
+            //  Finds the MediatR handler for the selected request.
+            (bool handlerTypeFound, ITypeElement? mediatrHandlerTypeElement) = FindHandler(solution);
 
-                if (_selectedTreeNode is null)
-                    return;
+            if (!handlerTypeFound)
+                return DefaultActions.Empty;
 
-                _selectedDeclaredType = TryGetSelectedType(_selectedTreeNode);
+            //  Finds the C# file where the MediatR handler is stored.
+            (bool fileFound, ICSharpFile? csharpFile) = FindCSharpFile(mediatrHandlerTypeElement!);
 
-                _mediatrRequestType = CSharpTypeFactory.CreateType("MediatR.IRequest", _selectedTreeNode);
-                _mediatrRequestWithResponseType = CSharpTypeFactory.CreateType("MediatR.IRequest<out TResponse>", _selectedTreeNode);
+            if (!fileFound)
+                return DefaultActions.Empty;
 
-                IType mediatrRequestHandlerType = CSharpTypeFactory.CreateType("MediatR.IRequestHandler<in TRequest, TResponse>", _selectedTreeNode);
-                var mediatrRequestHandlerDeclaredType = mediatrRequestHandlerType as IDeclaredType;
-                IResolveResult? resolveResult = mediatrRequestHandlerDeclaredType?.Resolve();
-                _mediatrRequestHandlerDeclaredElement = resolveResult?.DeclaredElement;
+            //  Finds the tree node of the handler in that file.
+            (bool nodeFound, ITreeNode? treeNode) = FindTreeNode(mediatrHandlerTypeElement!, csharpFile!);
 
-                IType mediatrAsyncRequestHandlerType = CSharpTypeFactory.CreateType("MediatR.AsyncRequestHandler<in TRequest>", _selectedTreeNode);
-                var mediatrAsyncRequestHandlerDeclaredType = mediatrAsyncRequestHandlerType as IDeclaredType;
-                IResolveResult? asyncRequestResolveResult = mediatrAsyncRequestHandlerDeclaredType?.Resolve();
-                _mediatrAsyncRequestHandlerDeclaredElement = asyncRequestResolveResult?.DeclaredElement;
-            }
-            catch (Exception unhandledException)
-            {
-                GoToHandlerActionLog.Log(LoggingLevel.ERROR, unhandledException.ToString());
-            }
+            if (!nodeFound)
+                return DefaultActions.Empty;
+
+            //  Go to the file!
+            NavigateToFile(treeNode!);
+        }
+        catch (Exception unhandledException)
+        {
+            Logger.Instance.Log(LoggingLevel.ERROR, unhandledException.ToString());
         }
 
-        #endregion
+        return DefaultActions.Empty;
+    }
 
-        #region Public Methods
+    #endregion
 
-        public static ICSharpFile GetCSharpFile(IProject project, string filename)
+    #region Private Methods
+
+    private (bool fileFound, ICSharpFile? csharpFile) FindCSharpFile(ITypeElement typeElement)
+    {
+        (bool fileFound, ICSharpFile? csharpFile) = typeElement.FindCSharpFile();
+
+        if (!fileFound)
+            Logger.Instance.Log(LoggingLevel.WARN, "The C# source file of the MediatR handler could not be found.");
+        else
+            Logger.Instance.Log(LoggingLevel.WARN, $"The C# source file of the MediatR handler has been found: '{csharpFile!.GetSourceFile()!.DisplayName}'");
+
+        return (fileFound, csharpFile);
+    }
+
+    private (bool handlerFound, ITypeElement? typeElement) FindHandler(ISolution solution)
+    {
+        ITypeElement? mediatrHandlerTypeElement = _mediatR.FindHandler(solution, _mediatrRequestIdentifier);
+
+        if (mediatrHandlerTypeElement is null)
+            Logger.Instance.Log(LoggingLevel.WARN, $"No MediatR handler using the type '{_mediatrRequestIdentifier.Name}' has been found.");
+        else
+            Logger.Instance.Log(LoggingLevel.WARN, $"A MediatR handler using the type '{_mediatrRequestIdentifier.Name}' has been found: '{mediatrHandlerTypeElement.GetClrName().FullName}'");
+
+        return (mediatrHandlerTypeElement is not null, mediatrHandlerTypeElement);
+    }
+
+    private (bool nodeFound, ITreeNode? treeNode) FindTreeNode(ITypeElement typeElement, ICSharpFile csharpFile)
+    {
+        ITreeNode? treeNode = csharpFile.GetTreeNode(typeElement.GetFullname());
+
+        if (treeNode is null)
+            Logger.Instance.Log(LoggingLevel.WARN, $"The tree node for the type '{typeElement.ShortName}' could not be found in the file '{csharpFile.GetSourceFile()!.DisplayName}'.");
+        else
+            Logger.Instance.Log(LoggingLevel.WARN, $"The tree node for the type '{typeElement.ShortName}' has been found in the file '{csharpFile.GetSourceFile()!.DisplayName}'.");
+
+        return (treeNode is not null, treeNode);
+    }
+
+    private IIdentifier GetSelectedMediatrRequest(IContextActionDataProvider dataProvider)
+    {
+        if (dataProvider.GetSelectedElement<ITreeNode>() is not IIdentifier mediatrRequestIdentifier)
         {
-            VirtualFileSystemPath fileSystem = VirtualFileSystemPath.Parse(filename, LocalInteractionContext.Instance);
-            IPsiSourceFile? file = project.GetPsiSourceFileInProject(fileSystem);
-            return file?.GetPsiFiles<CSharpLanguage>().SafeOfType<ICSharpFile>().SingleOrDefault();
+            Logger.Instance.Log(LoggingLevel.VERBOSE, $"The selected tree node is not an instance of {nameof(IIdentifier)}.");
+            return new NullIdentifier(dataProvider.PsiModule);
         }
 
-        public override bool IsAvailable(IUserDataHolder cache)
+        if (!_mediatR.IsRequest(mediatrRequestIdentifier))
         {
-            return true;
-            /*
-            return _selectedDeclaredType is not null
-                && 
-                (
-                    _selectedDeclaredType.IsSubtypeOf(_mediatrRequestType)
-                    || _selectedDeclaredType.IsSubtypeOf(_mediatrRequestWithResponseType)
-                );
-            */
+            Logger.Instance.Log(LoggingLevel.VERBOSE, "The selected tree node is not mediatR request.");
+            return new NullIdentifier(dataProvider.PsiModule);
         }
 
-        #endregion
+        return mediatrRequestIdentifier;
+    }
 
-        #region Protected Methods
-
-        protected override Action<ITextControl> ExecutePsiTransaction(ISolution solution, IProgressIndicator progress)
-        {
-            try
-            {
-                IPsiServices psiServices = solution.GetPsiServices();
-
-                IReadOnlyCollection<ITypeElement> possibleInheritors = psiServices
-                    .Symbols
-                    .GetPossibleInheritors(_mediatrRequestHandlerDeclaredElement?.ShortName)
-                    .ToList()
-                    .Union(psiServices.Symbols.GetPossibleInheritors(_mediatrAsyncRequestHandlerDeclaredElement?.ShortName))
-                    .ToList();
-
-                ITypeElement? typeElement = SelectInheritor(possibleInheritors);
-
-                HybridCollection<IPsiSourceFile> sourceFiles = typeElement.GetSourceFiles();
-
-                var sourceFile = sourceFiles.First() as IPsiProjectFile;
-                IProject? project = sourceFile.GetProject();
-                ICSharpFile? file = GetCSharpFile(project, sourceFile.Location.FullPath);
-                ITreeNode node = GetTypeTreeNodeByFqn(file, $"{typeElement.GetContainingNamespace().QualifiedName}.{typeElement.ShortName}");
-                node.NavigateToTreeNode(true);
-            }
-            catch (Exception unhandledException)
-            {
-                GoToHandlerActionLog.Log(LoggingLevel.ERROR, unhandledException.ToString());
-            }
-            
-            return null;
-        }
-
-        #endregion
-
-        #region Private Methods
-
-        private static string GetLongNameFromFqn(string fqn)
-        {
-            int pos = fqn.LastIndexOf(".", StringComparison.Ordinal) + 1;
-            return pos > 0 ? fqn.Substring(0, pos - 1) : fqn;
-        }
-
-        private static string GetShortNameFromFqn(string fqn)
-        {
-            int pos = fqn.LastIndexOf(".", StringComparison.Ordinal) + 1;
-            return pos > 0 ? fqn.Substring(pos) : fqn;
-        }
-
-        private static ITreeNode GetTypeTreeNodeByFqn(ICSharpFile file, string typeName)
-        {
-            string namespaceName = GetLongNameFromFqn(typeName);
-            string shortName = GetShortNameFromFqn(typeName);
-
-            TreeNodeEnumerable<ICSharpNamespaceDeclaration> namespaceDecls = file.NamespaceDeclarationsEnumerable;
-            ICSharpNamespaceDeclaration? namespaceDecl = (from decl in namespaceDecls
-                where decl.DeclaredName == namespaceName
-                select decl).FirstOrDefault();
-
-            if (namespaceDecl == null)
-                return null;
-
-            TreeNodeEnumerable<ICSharpTypeDeclaration> typeDecls = namespaceDecl.TypeDeclarationsEnumerable;
-
-            List<ICSharpTypeDeclaration> resultList = (from node in typeDecls
-                where node.DeclaredName == shortName
-                select node).ToList();
-
-            return resultList.FirstOrDefault();
-        }
-
-        private static IDeclaredType? TryGetSelectedType(ITreeNode? selectedTreeNode)
-        {
-            if (selectedTreeNode is null)
-                return null;
-
-            var selectedIdentifier = selectedTreeNode as IIdentifier;
-
-            if (selectedIdentifier is null)
-                return null;
-
-            IType type = CSharpTypeFactory.CreateType(selectedIdentifier.Name, selectedIdentifier);
-
-            return type as IDeclaredType;
-
-            // IResolveResult? result = declaredType?.Resolve();
-            //
-            // return result?.DeclaredElement;
-        }
-
-        private ITypeElement? SelectInheritor(IEnumerable<ITypeElement> inheritors)
-        {
-            foreach (ITypeElement? inheritor in inheritors)
-            {
-                if (inheritor is not IClass classInheritor)
-                    continue;
-
-                if (classInheritor.IsAbstract)
-                    continue;
-
-                bool supportRequest = classInheritor
-                    .GetDeclarations()
-                    .Cast<IClassDeclaration>()
-                    .SelectMany(classDeclaration => classDeclaration.InheritedTypeUsagesEnumerable)
-                    .Cast<IUserTypeUsage>()
-                    .Select(userTypeUsage => userTypeUsage.ScalarTypeName)
-                    .Select(scalarTypeName => scalarTypeName.TypeArgumentList)
-                    .Select(typeArgumentList => typeArgumentList.Children())
-                    .SelectMany(treeNode => treeNode)
-                    .Where(child => child is IUserTypeUsage)
-                    .Cast<IUserTypeUsage>()
-                    .Any(userTypeUsage => string.Equals(userTypeUsage.ScalarTypeName.ShortName, _selectedTreeNode.Name, StringComparison.CurrentCultureIgnoreCase));
-
-                if (supportRequest)
-                    return inheritor;
-            }
-
-            return null;
-        }
-
-        #endregion
+    private void NavigateToFile(ITreeNode treeNode)
+    {
+        treeNode.NavigateToTreeNode(true);
     }
 
     #endregion
 }
+
+#endregion
