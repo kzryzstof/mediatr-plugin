@@ -3,7 +3,7 @@
 // All rights reserved.
 // May be used only in accordance with a valid Source Code License Agreement.
 // 
-// Last change: 27/12/2021 @ 21:11
+// Last change: 28/12/2021 @ 09:15
 // Last author: Christophe Commeyne
 // ==========================================================================
 
@@ -17,9 +17,13 @@ using JetBrains.Util.DataStructures;
 
 namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR.ReSharper.Psi;
 
+#region Class
+
 internal static class DeclaredElementExtensions
 {
-    public static (bool found, ICSharpFile? csharpFile) RetrieveCSharpFile(this IDeclaredElement declaredElement)
+    #region Public Methods
+
+    public static (bool found, ICSharpFile? csharpFile) FindCSharpFile(this IDeclaredElement declaredElement)
     {
         HybridCollection<IPsiSourceFile> sourceFiles = declaredElement.GetSourceFiles();
 
@@ -35,4 +39,8 @@ internal static class DeclaredElementExtensions
 
         return (csharpFile is not null, csharpFile);
     }
+
+    #endregion
 }
+
+#endregion
