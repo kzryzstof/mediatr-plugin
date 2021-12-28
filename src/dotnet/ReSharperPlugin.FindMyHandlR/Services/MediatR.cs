@@ -46,6 +46,8 @@ internal sealed class MediatR : IMediatR
             .Finder
             .FindInheritors(mediatrRequestHandlerType.GetTypeElement(), inheritorsConsumer, new ProgressIndicator(Lifetime.Eternal));
 
+        //  I do not know why but FindInheritors and GetPossibleInheritors do not return all the handlers by themselves.
+        //  I have to union both results of each to get all the actual IRequestHandler implementations.
         IEnumerable<ITypeElement> results = inheritorsConsumer
             .FoundElements
             .Union
