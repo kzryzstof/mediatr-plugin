@@ -34,6 +34,9 @@ internal sealed class MediatR : IMediatR
 
     public ITypeElement? FindHandler(ISolution solution, IIdentifier identifier)
     {
+        Guard.ThrowIfIsNull(solution, nameof(solution));
+        Guard.ThrowIfIsNull(identifier, nameof(identifier));
+        
         IType mediatrRequestHandlerType = CSharpTypeFactory.CreateType("MediatR.IRequestHandler<in TRequest, TResponse>", identifier);
         var mediatrRequestHandlerDeclaredType = (IDeclaredType)mediatrRequestHandlerType;
         IResolveResult resolveResult = mediatrRequestHandlerDeclaredType.Resolve();
