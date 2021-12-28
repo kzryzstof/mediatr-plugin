@@ -5,6 +5,7 @@
     <LangVersion>default</LangVersion>
     <PackageId>nosuchcompany.find-my-handlr</PackageId>
     <Nullable>enable</Nullable>
+    <RootNamespace>NoSuchCompany.ReSharperPlugin.FindMyHandlR</RootNamespace>
   </PropertyGroup>
 
   <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
