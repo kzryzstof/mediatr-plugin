@@ -11,19 +11,20 @@ using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Tree;
 
-namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR.Services;
-
-#region Interface
-
-public interface IMediatR
+namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR.Services
 {
-    #region Methods
+    #region Interface
 
-    ITypeElement? FindHandler(ISolution solution, IIdentifier identifier);
+    public interface IMediatR
+    {
+        #region Methods
 
-    bool IsRequest(IIdentifier identifier);
+        ITypeElement? FindHandler(ISolution solution, IIdentifier identifier);
+
+        bool IsRequest(IIdentifier identifier);
+
+        #endregion
+    }
 
     #endregion
 }
-
-#endregion

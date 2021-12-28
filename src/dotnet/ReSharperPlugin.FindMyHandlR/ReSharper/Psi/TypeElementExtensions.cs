@@ -9,20 +9,21 @@
 
 using JetBrains.ReSharper.Psi;
 
-namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR.ReSharper.Psi;
-
-#region Class
-
-internal static class TypeElementExtensions
+namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR.ReSharper.Psi
 {
-    #region Public Methods
+    #region Class
 
-    public static string GetFullname(this ITypeElement typeElement)
+    internal static class TypeElementExtensions
     {
-        return $"{typeElement.GetContainingNamespace().QualifiedName}.{typeElement.ShortName}";
+        #region Public Methods
+
+        public static string GetFullname(this ITypeElement typeElement)
+        {
+            return $"{typeElement.GetContainingNamespace().QualifiedName}.{typeElement.ShortName}";
+        }
+
+        #endregion
     }
 
     #endregion
 }
-
-#endregion

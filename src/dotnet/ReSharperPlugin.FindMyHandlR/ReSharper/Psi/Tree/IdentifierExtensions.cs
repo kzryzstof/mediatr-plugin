@@ -12,24 +12,25 @@ using JetBrains.ReSharper.Psi.CSharp;
 using JetBrains.ReSharper.Psi.Tree;
 using NoSuchCompany.ReSharperPlugin.FindMyHandlR.Diagnostics;
 
-namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR.ReSharper.Psi.Tree;
-
-#region Class
-
-internal static class IdentifierExtensions
+namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR.ReSharper.Psi.Tree
 {
-    #region Public Methods
+    #region Class
 
-    public static IDeclaredType ToDeclaredType(this IIdentifier identifier)
+    internal static class IdentifierExtensions
     {
-        Guard.ThrowIfIsNull(identifier, nameof(identifier));
+        #region Public Methods
 
-        IType type = CSharpTypeFactory.CreateType(identifier.Name, identifier);
+        public static IDeclaredType ToDeclaredType(this IIdentifier identifier)
+        {
+            Guard.ThrowIfIsNull(identifier, nameof(identifier));
 
-        return (IDeclaredType)type;
+            IType type = CSharpTypeFactory.CreateType(identifier.Name, identifier);
+
+            return (IDeclaredType)type;
+        }
+
+        #endregion
     }
 
     #endregion
 }
-
-#endregion

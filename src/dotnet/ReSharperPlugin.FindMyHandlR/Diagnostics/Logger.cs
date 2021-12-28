@@ -10,17 +10,18 @@
 using JetBrains.Diagnostics;
 using NoSuchCompany.ReSharperPlugin.FindMyHandlR.Actions;
 
-namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR.Diagnostics;
-
-#region Class
-
-internal static class Logger
+namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR.Diagnostics
 {
-    #region Constants
+    #region Class
 
-    public static readonly ILog Instance = Log.GetLog<GoToHandlerAction>();
+    internal static class Logger
+    {
+        #region Constants
+
+        public static readonly ILog Instance = Log.GetLog<GoToHandlerAction>();
+
+        #endregion
+    }
 
     #endregion
 }
-
-#endregion
