@@ -1,5 +1,5 @@
-$PluginId = "ReSharperPlugin.FindMyHandlR"
-$SolutionPath = "$PSScriptRoot\ReSharperPlugin.FindMyHandlR.sln"
+$PluginId = "NoSuchCompany.FindMyHandlR"
+$SolutionPath = "$PSScriptRoot\NoSuchCompany.FindMyHandlR.sln"
 $SourceBasePath = "$PSScriptRoot\src\dotnet"
 
 $VsWhereOutput = [xml] (& "$PSScriptRoot\tools\vswhere.exe" -format xml -products *)

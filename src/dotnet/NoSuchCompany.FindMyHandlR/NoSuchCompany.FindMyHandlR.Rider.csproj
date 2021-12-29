@@ -10,7 +10,7 @@
 
   <PropertyGroup>
     <TargetFramework>net48</TargetFramework>
-    <AssemblyName>ReSharperPlugin.FindMyHandlR</AssemblyName>
+    <AssemblyName>NoSuchCompany.FindMyHandlR</AssemblyName>
     <RootNamespace>NoSuchCompany.ReSharperPlugin.FindMyHandlR</RootNamespace>
     <IsPackable>false</IsPackable>
     <DefineConstants>$(DefineConstants);RIDER</DefineConstants>
