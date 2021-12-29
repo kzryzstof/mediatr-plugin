@@ -32,6 +32,13 @@
     <!-- TODO: add additional assemblies -->
   </ItemGroup>
 
+
+  <ItemGroup>
+    <None Remove="bin\**" />
+    <EmbeddedResource Remove="bin\**" />
+    <Compile Remove="bin\**" />
+  </ItemGroup>
+
   <!-- WARNING: ReSharper plugins with icons must be compiled using PowerShell scripts -->
   <!-- TODO: uncomment for xaml icons -->
   <!--<ItemGroup>-->
