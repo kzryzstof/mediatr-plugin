@@ -132,7 +132,7 @@ namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR.Actions
 
         #region Private Methods
 
-        private (bool fileFound, ICSharpFile? csharpFile) FindCSharpFile(ITypeElement typeElement)
+        private (bool fileFound, ICSharpFile? csharpFile) FindCSharpFile(IDeclaredElement typeElement)
         {
             (bool fileFound, ICSharpFile? csharpFile) = typeElement.FindCSharpFile();
 
