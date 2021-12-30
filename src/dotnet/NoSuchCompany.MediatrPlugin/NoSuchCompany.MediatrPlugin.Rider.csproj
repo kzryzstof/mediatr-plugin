@@ -10,7 +10,7 @@
 
   <PropertyGroup>
     <TargetFramework>net48</TargetFramework>
-    <AssemblyName>NoSuchCompany.ReSharper.MediatrPlugin</AssemblyName>
+    <AssemblyName>NoSuchCompany.MediatrPlugin</AssemblyName>
     <RootNamespace>NoSuchCompany.ReSharper.MediatrPlugin</RootNamespace>
     <IsPackable>false</IsPackable>
     <DefineConstants>$(DefineConstants);RIDER</DefineConstants>
