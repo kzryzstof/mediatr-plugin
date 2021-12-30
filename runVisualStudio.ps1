@@ -1,5 +1,5 @@
 Param(
-    $RootSuffix = "FindMyHandlR",
+    $RootSuffix = "MediatR",
     $Version = "9999.0.0"
 )
 

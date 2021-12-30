@@ -1,4 +1,4 @@
-package ca.nosuchcompany.rider.plugins.findmyhandlr
+package ca.nosuchcompany.rider.plugins.mediatr
 
 import com.jetbrains.rider.actions.base.RiderAnAction
 

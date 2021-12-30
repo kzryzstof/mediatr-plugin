@@ -10,8 +10,8 @@
 
   <PropertyGroup>
     <TargetFramework>net48</TargetFramework>
-    <AssemblyName>NoSuchCompany.FindMyHandlR</AssemblyName>
-    <RootNamespace>NoSuchCompany.ReSharperPlugin.FindMyHandlR</RootNamespace>
+    <AssemblyName>NoSuchCompany.ReSharper.MediatrPlugin</AssemblyName>
+    <RootNamespace>NoSuchCompany.ReSharper.MediatrPlugin</RootNamespace>
     <IsPackable>false</IsPackable>
     <DefineConstants>$(DefineConstants);RIDER</DefineConstants>
   </PropertyGroup>

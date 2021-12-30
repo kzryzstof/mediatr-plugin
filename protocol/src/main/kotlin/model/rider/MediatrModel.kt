@@ -5,7 +5,7 @@ import com.jetbrains.rd.generator.nova.*
 import com.jetbrains.rd.generator.nova.PredefinedType.*
 
 @Suppress("unused")
-object FindMyHandlRModel : Ext(SolutionModel.Solution) {
+object MediatrModel : Ext(SolutionModel.Solution) {
 
     val MyEnum = enum {
         +"FirstValue"
