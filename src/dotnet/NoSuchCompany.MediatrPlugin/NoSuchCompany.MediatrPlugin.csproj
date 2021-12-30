@@ -6,7 +6,7 @@
     <PackageId>nosuchcompany.mediatr</PackageId>
     <Nullable>enable</Nullable>
     <RootNamespace>NoSuchCompany.ReSharper.MediatrPlugin</RootNamespace>
-    <AssemblyName>NoSuchCompany.ReSharper.MediatrPlugin</AssemblyName>
+    <AssemblyName>NoSuchCompany.MediatrPlugin</AssemblyName>
   </PropertyGroup>
 
   <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
