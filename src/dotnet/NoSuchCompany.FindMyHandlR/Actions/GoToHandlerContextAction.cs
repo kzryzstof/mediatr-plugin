@@ -35,7 +35,7 @@ namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR.Actions
         Disabled = false,
         Priority = 1
     )]
-    public sealed class GoToHandlerAction : ContextActionBase
+    public sealed class GoToHandlerContextAction : ContextActionBase
     {
         #region Constants
 
@@ -60,7 +60,7 @@ namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR.Actions
         /// - The <paramref name="dataProvider" /> instance is null.
         /// - The <paramref name="mediatR" /> instance is null.
         /// </exception>
-        internal GoToHandlerAction(LanguageIndependentContextActionDataProvider dataProvider, IMediatR mediatR)
+        internal GoToHandlerContextAction(LanguageIndependentContextActionDataProvider dataProvider, IMediatR mediatR)
         {
             Guard.ThrowIfIsNull(dataProvider, nameof(dataProvider));
             Guard.ThrowIfIsNull(mediatR, nameof(mediatR));
@@ -70,7 +70,7 @@ namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR.Actions
         }
 
         /// <param name="dataProvider"></param>
-        public GoToHandlerAction(LanguageIndependentContextActionDataProvider dataProvider)
+        public GoToHandlerContextAction(LanguageIndependentContextActionDataProvider dataProvider)
             : this(dataProvider, new MediatR())
         {
         }
