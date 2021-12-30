@@ -3,14 +3,14 @@
   <PropertyGroup>
     <SdkVersion>2021.3.0</SdkVersion>
 
-    <Title>Find My HandlR</Title>
+    <Title>MediatR Extensions</Title>
     <Description>The Plugin provides the ability to quickly find the MediatR handler corresponding to a given IRequest</Description>
 
     <Authors>NoSuch Company</Authors>
     <Copyright></Copyright>
     <PackageTags>mediatr</PackageTags>
 
-    <PackageProjectUrl>https://github.com/kzryzstof/find-my-handlr</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/kzryzstof/mediatr-plugin</PackageProjectUrl>
     <PackageLicenseUrl>https://www.gnu.org/licenses/lgpl-3.0.en.html</PackageLicenseUrl>
     <PackageIconUrl></PackageIconUrl>
   </PropertyGroup>

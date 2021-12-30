@@ -4,6 +4,8 @@
     <TargetFramework>net48</TargetFramework>
     <IsPackable>false</IsPackable>
     <LangVersion>default</LangVersion>
+    <RootNamespace>NoSuchCompany.ReSharper.MediatrPlugin.Tests</RootNamespace>
+    <AssemblyName>NoSuchCompany.ReSharper.MediatrPlugin.Tests</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>

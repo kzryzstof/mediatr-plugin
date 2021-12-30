@@ -3,9 +3,10 @@
   <PropertyGroup>
     <LanguageTargets>$(MSBuildToolsPath)\Microsoft.CSharp.targets</LanguageTargets>
     <LangVersion>default</LangVersion>
-    <PackageId>nosuchcompany.find-my-handlr</PackageId>
+    <PackageId>nosuchcompany.mediatr</PackageId>
     <Nullable>enable</Nullable>
-    <RootNamespace>NoSuchCompany.ReSharperPlugin.FindMyHandlR</RootNamespace>
+    <RootNamespace>NoSuchCompany.ReSharper.MediatrPlugin</RootNamespace>
+    <AssemblyName>NoSuchCompany.ReSharper.MediatrPlugin</AssemblyName>
   </PropertyGroup>
 
   <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
@@ -22,14 +23,6 @@
     <PackageReference Include="JetBrains.ReSharper.SDK" Version="$(SdkVersion)" PrivateAssets="all" />
     <!-- TODO: https://github.com/NuGet/Home/issues/7154 -->
     <PackageReference Include="Wave" Version="[$(WaveVersion),$(UpperWaveVersion))" />
-  </ItemGroup>
-
-
-  <ItemGroup>
-    <Content Include="bin\$(AssemblyName)\$(Configuration)\$(AssemblyName).dll" PackagePath="dotFiles" Pack="true" />
-    <Content Include="bin\$(AssemblyName)\$(Configuration)\$(AssemblyName).pdb" PackagePath="dotFiles" Pack="true" />
-
-    <!-- TODO: add additional assemblies -->
   </ItemGroup>
 
 
