@@ -32,19 +32,18 @@ namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR.Services
     {
         #region Public Methods
 
-        public ITypeElement? FindHandler(ISolution solution, IIdentifier identifier)
+        public ITypeElement? FindHandler(IIdentifier identifier)
         {
-            Guard.ThrowIfIsNull(solution, nameof(solution));
             Guard.ThrowIfIsNull(identifier, nameof(identifier));
-        
+
+            IPsiServices psiServices = identifier.GetPsiServices();
+            
             IType mediatrRequestHandlerType = CSharpTypeFactory.CreateType("MediatR.IRequestHandler<in TRequest, TResponse>", identifier);
             var mediatrRequestHandlerDeclaredType = (IDeclaredType)mediatrRequestHandlerType;
             IResolveResult resolveResult = mediatrRequestHandlerDeclaredType.Resolve();
 
-            IPsiServices psiServices = solution.GetPsiServices();
-
             var inheritorsConsumer = new InheritorsConsumer();
-
+            
             psiServices
                 .Finder
                 .FindInheritors(mediatrRequestHandlerType.GetTypeElement(), inheritorsConsumer, new ProgressIndicator(Lifetime.Eternal));
@@ -73,7 +72,7 @@ namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR.Services
             IDeclaredType declaredType = identifier.ToDeclaredType();
 
             IType mediatrBaseRequestType = CSharpTypeFactory.CreateType("MediatR.IBaseRequest", declaredType.Module);
-
+            
             if (declaredType.IsSubtypeOf((IDeclaredType)mediatrBaseRequestType))
             {
                 Logger.Instance.Log(LoggingLevel.VERBOSE, $"> The declared type '{declaredType.GetClrName().FullName}' is considered a subtype of '{mediatrBaseRequestType.GetScalarType()!.GetClrName().FullName}'");

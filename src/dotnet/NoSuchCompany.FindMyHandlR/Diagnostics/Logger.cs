@@ -18,7 +18,7 @@ namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR.Diagnostics
     {
         #region Constants
 
-        public static readonly ILog Instance = Log.GetLog<GoToHandlerAction>();
+        public static readonly ILog Instance = Log.GetLog<GoToHandlerContextAction>();
 
         #endregion
     }

@@ -12,4 +12,16 @@
 ]]>
   </description>
 
+  <actions>
+    <group id="org.intellij.sdk.action.GroupedActions" 
+           text="MediatR extensions" 
+           popup="true">
+      <add-to-group group-id="GoToMenu" />
+      <action id="GoToHandlrAction"
+              class="ca.nosuchcompany.rider.plugins.findmyhandlr.GoToHandlrAction">
+        <keyboard-shortcut keymap="$default" first-keystroke="control alt F11" replace-all="true" />
+      </action>
+    </group>
+  </actions>
+  
 </idea-plugin>
