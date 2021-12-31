@@ -15,7 +15,7 @@
     <TargetFramework>net472</TargetFramework>
     <IsPackable>True</IsPackable>
     <DefineConstants>$(DefineConstants);RESHARPER</DefineConstants>
-    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <IncludeBuildOutput>True</IncludeBuildOutput>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
   </PropertyGroup>
 
