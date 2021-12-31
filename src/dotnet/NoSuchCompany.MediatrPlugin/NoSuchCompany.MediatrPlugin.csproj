@@ -3,7 +3,7 @@
   <PropertyGroup>
     <LanguageTargets>$(MSBuildToolsPath)\Microsoft.CSharp.targets</LanguageTargets>
     <LangVersion>default</LangVersion>
-    <PackageId>nosuchcompany.mediatr</PackageId>
+    <PackageId>nosuchcompany.mediatrplugin</PackageId>
     <Nullable>enable</Nullable>
     <RootNamespace>NoSuchCompany.ReSharper.MediatrPlugin</RootNamespace>
     <AssemblyName>NoSuchCompany.MediatrPlugin</AssemblyName>
@@ -12,7 +12,7 @@
   <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
 
   <PropertyGroup>
-    <TargetFramework>net48</TargetFramework>
+    <TargetFramework>net472</TargetFramework>
     <IsPackable>True</IsPackable>
     <DefineConstants>$(DefineConstants);RESHARPER</DefineConstants>
     <IncludeBuildOutput>false</IncludeBuildOutput>

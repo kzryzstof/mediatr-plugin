@@ -31,7 +31,7 @@ namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR.Actions
         Disabled = false,
         Priority = 1
     )]
-    public sealed class GoToHandlerContextAction : ContextActionBase
+    public sealed class GoToHandlrContextAction : ContextActionBase
     {
         #region Constants
 
@@ -56,17 +56,19 @@ namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR.Actions
         /// - The <paramref name="dataProvider" /> instance is null.
         /// - The <paramref name="handlrNavigator" /> instance is null.
         /// </exception>
-        internal GoToHandlerContextAction(LanguageIndependentContextActionDataProvider dataProvider, IHandlrNavigator handlrNavigator)
+        internal GoToHandlrContextAction(LanguageIndependentContextActionDataProvider dataProvider, IHandlrNavigator handlrNavigator)
         {
             Guard.ThrowIfIsNull(dataProvider, nameof(dataProvider));
             Guard.ThrowIfIsNull(handlrNavigator, nameof(handlrNavigator));
+
+            Logger.Instance.Log(LoggingLevel.WARN, "Ctor called.");
 
             _handlrNavigator = handlrNavigator;
             _mediatrRequestIdentifier = GetSelectedMediatrRequest(dataProvider);
         }
 
         /// <param name="dataProvider"></param>
-        public GoToHandlerContextAction(LanguageIndependentContextActionDataProvider dataProvider)
+        public GoToHandlrContextAction(LanguageIndependentContextActionDataProvider dataProvider)
             : this(dataProvider, new HandlrNavigator(new MediatR()))
         {
         }
@@ -82,6 +84,8 @@ namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR.Actions
         /// <returns></returns>
         public override bool IsAvailable(IUserDataHolder _)
         {
+            Logger.Instance.Log(LoggingLevel.WARN, "IsAvailable");
+
             return _mediatrRequestIdentifier is not NullIdentifier;
         }
 
@@ -91,6 +95,8 @@ namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR.Actions
 
         protected override Action<ITextControl> ExecutePsiTransaction(ISolution solution, IProgressIndicator progress)
         {
+            Logger.Instance.Log(LoggingLevel.WARN, "ExecutePsiTransaction");
+
             _handlrNavigator.Navigate(_mediatrRequestIdentifier);
 
             return DefaultActions.Empty;
