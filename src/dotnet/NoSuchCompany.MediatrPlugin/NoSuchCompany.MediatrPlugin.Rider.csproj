@@ -9,7 +9,7 @@
   <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
 
   <PropertyGroup>
-    <TargetFramework>net48</TargetFramework>
+    <TargetFramework>net472</TargetFramework>
     <AssemblyName>NoSuchCompany.MediatrPlugin</AssemblyName>
     <RootNamespace>NoSuchCompany.ReSharper.MediatrPlugin</RootNamespace>
     <IsPackable>false</IsPackable>

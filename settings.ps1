@@ -1,4 +1,4 @@
-$PluginId = "ca.nosuchcompany.rider.plugins.mediatr"
+$PluginId = "NoSuchCompany.MediatrPlugin"
 $SolutionPath = "$PSScriptRoot\NoSuchCompany.MediatrPlugin.sln"
 $SourceBasePath = "$PSScriptRoot\src\dotnet"
 

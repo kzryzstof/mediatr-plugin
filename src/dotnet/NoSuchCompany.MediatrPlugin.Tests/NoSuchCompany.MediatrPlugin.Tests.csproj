@@ -13,12 +13,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\NoSuchCompany.FindMyHandlR\NoSuchCompany.FindMyHandlR.csproj" />
+    <Compile Remove="test/**/*" />
+    <None Include="test/**/*" />
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Remove="test/**/*" />
-    <None Include="test/**/*" />
+    <ProjectReference Include="..\NoSuchCompany.MediatrPlugin\NoSuchCompany.MediatrPlugin.csproj" />
   </ItemGroup>
 
 </Project>
