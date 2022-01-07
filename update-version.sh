@@ -17,11 +17,11 @@ for pluginXmlFile in $( find ../. -name "gradle.properties" ); do
 	eval $cmd
 done
 
-for pluginXmlFile in $( find ../. -name "*.AssemblyInfo.cs" ); do
+for pluginXmlFile in $( find ../. -name "**/*.csproj" ); do
   echo "Editing file: $pluginXmlFile $newVersion"
-	cmd="ed -s $pluginXmlFile <<< $'H\n,s/AssemblyFileVersionAttribute(\"1.0.0.0\")/AssemblyFileVersionAttribute(\"$newVersion\")/g\nw'"
-	cmd="ed -s $pluginXmlFile <<< $'H\n,s/AssemblyInformationalVersionAttribute(\"1.0.0\")/AssemblyInformationalVersionAttribute(\"$newVersion\")/g\nw'"
-	cmd="ed -s $pluginXmlFile <<< $'H\n,s/AssemblyVersionAttribute(\"1.0.0.0\")/AssemblyVersionAttribute(\"$newVersion\")/g\nw'"
+	cmd="ed -s $pluginXmlFile <<< $'H\n,s/<PackageVersion>1.0.1<\/PackageVersion>/<PackageVersion>$newVersion<\/PackageVersion>/g\nw'"
+	cmd="ed -s $pluginXmlFile <<< $'H\n,s/<AssemblyVersion>1.0.1<\/AssemblyVersion>/<AssemblyVersion>$newVersion<\/AssemblyVersion>/g\nw'"
+	cmd="ed -s $pluginXmlFile <<< $'H\n,s/<FileVersion>1.0.1<\/FileVersion>/<FileVersion>$newVersion<\/FileVersion>/g\nw'"
 	echo $cmd
 	eval $cmd
 done
