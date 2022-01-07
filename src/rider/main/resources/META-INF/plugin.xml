@@ -8,7 +8,7 @@
 
   <description>
 <![CDATA[
-<p>Ever got frustrated to find out where was the handler of an MediatR's IRequest? Say no more. This plugin provides a context action to easily reach the handler of any MediatR request. Select your MediatR request, click on that action and boom you will be automatically transported to the appropriate handler.</p>
+<p>Ever got frustrated to find out where was the handler of a MediatR's IRequest? Say no more. This plugin provides a context action to easily reach the handler of any MediatR request. Select your MediatR request, click on that action and boom you will be automatically transported to the appropriate handler.</p>
 ]]>
   </description>
 
