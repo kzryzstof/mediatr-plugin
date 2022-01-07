@@ -20,7 +20,21 @@ done
 for pluginXmlFile in $( find ../. -name "*.csproj" ); do
   echo "Editing file: $pluginXmlFile $newVersion"
 	cmd="ed -s $pluginXmlFile <<< $'H\n,s/<PackageVersion>1.0.1</<PackageVersion>$newVersion</g\nw'"
+	echo $cmd
+	eval $cmd
+done
+
+
+for pluginXmlFile in $( find ../. -name "*.csproj" ); do
+  echo "Editing file: $pluginXmlFile $newVersion"
 	cmd="ed -s $pluginXmlFile <<< $'H\n,s/<AssemblyVersion>1.0.1</<AssemblyVersion>$newVersion</g\nw'"
+	echo $cmd
+	eval $cmd
+done
+
+
+for pluginXmlFile in $( find ../. -name "*.csproj" ); do
+  echo "Editing file: $pluginXmlFile $newVersion"
 	cmd="ed -s $pluginXmlFile <<< $'H\n,s/<FileVersion>1.0.1</<FileVersion>$newVersion</g\nw'"
 	echo $cmd
 	eval $cmd
