@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<actions>
+    <insert group-id="ReSharper.Navigate" position="last">
+        <action-group id="ReTesterPlugin" text="MediatR extensions">
+            <action id="GoToHandlrAction" text="Go to HandlR"/>
+        </action-group>
+    </insert>
+</actions>

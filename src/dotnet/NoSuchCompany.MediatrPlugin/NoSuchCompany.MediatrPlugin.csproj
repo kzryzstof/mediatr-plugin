@@ -33,6 +33,7 @@
     <None Remove="bin\**" />
     <EmbeddedResource Remove="bin\**" />
     <Compile Remove="bin\**" />
+    <EmbeddedResource Include="Actions.xml"/>
   </ItemGroup>
 
   <!-- WARNING: ReSharper plugins with icons must be compiled using PowerShell scripts -->
@@ -61,5 +62,5 @@
   <!--</ItemGroup>-->
 
   <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
-
+  
 </Project>
