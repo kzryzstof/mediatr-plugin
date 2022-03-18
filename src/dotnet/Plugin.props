@@ -12,7 +12,7 @@
 
     <PackageProjectUrl>https://github.com/kzryzstof/mediatr-plugin</PackageProjectUrl>
     <PackageLicenseUrl>https://www.gnu.org/licenses/lgpl-3.0.en.html</PackageLicenseUrl>
-    <PackageIconUrl></PackageIconUrl>
+    <PackageIconUrl>https://github.com/kzryzstof/mediatr-plugin/blob/04462c921d284915b773feb1844821ce9ac82091/public/icon.png</PackageIconUrl>
   </PropertyGroup>
 
 </Project>
