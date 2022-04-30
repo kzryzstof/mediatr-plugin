@@ -11,7 +11,7 @@ namespace NoSuchCompany.ReSharper.MediatrPlugin.Actions
     [ContextNavigationProvider]
     public class NavigateToCtorProvider : INavigateFromHereProvider
     {
-        private static readonly string NullActionId = null;
+        private static readonly string NavigateToHandlrActionId = "NavigateToHandlR";
         private readonly IHandlrNavigator _handlrNavigator;
 
         public NavigateToCtorProvider()
@@ -27,7 +27,7 @@ namespace NoSuchCompany.ReSharper.MediatrPlugin.Actions
                 yield break;
             }
 
-            yield return new ContextNavigation("Go to handlR", NullActionId, NavigationActionGroup.Other, () =>
+            yield return new ContextNavigation("Go to handlR...", NavigateToHandlrActionId, NavigationActionGroup.Other, () =>
             {
                 var selectedTreeNode = dataContext.GetSelectedTreeNode<ITreeNode>();
                 
