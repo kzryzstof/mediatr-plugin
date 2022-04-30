@@ -4,9 +4,9 @@
     <LanguageTargets>$(MSBuildToolsPath)\Microsoft.CSharp.targets</LanguageTargets>
     <LangVersion>default</LangVersion>
     <PackageId>ca.nosuchcompany.mediatrplugin</PackageId>
-    <PackageVersion>9999.0.1</PackageVersion>
-    <AssemblyVersion>9999.0.1</AssemblyVersion>
-    <FileVersion>9999.0.1</FileVersion>
+    <PackageVersion>1.0.1</PackageVersion>
+    <AssemblyVersion>1.0.1</AssemblyVersion>
+    <FileVersion>1.0.1</FileVersion>
     <Nullable>enable</Nullable>
     <RootNamespace>NoSuchCompany.ReSharper.MediatrPlugin</RootNamespace>
     <AssemblyName>NoSuchCompany.MediatrPlugin</AssemblyName>
