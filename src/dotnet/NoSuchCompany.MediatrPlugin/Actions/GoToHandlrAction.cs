@@ -3,6 +3,7 @@ using JetBrains.Application.UI.Actions;
 using JetBrains.Application.UI.ActionsRevised.Menu;
 using JetBrains.Application.UI.ActionSystem.ActionsRevised.Menu;
 using JetBrains.Diagnostics;
+using JetBrains.ReSharper.Feature.Services.Menu;
 using JetBrains.ReSharper.Feature.Services.Navigation.ContextNavigation;
 using JetBrains.ReSharper.Psi.Files;
 using JetBrains.ReSharper.Psi.Tree;
@@ -12,7 +13,7 @@ using NoSuchCompany.ReSharperPlugin.FindMyHandlR.Services;
 namespace NoSuchCompany.ReSharper.MediatrPlugin.Actions
 {
 	[Action("GoToHandlrAction", "Go to the HandlR")]
-	public class GoToHandlrAction : IActionWithExecuteRequirement, IExecutableAction
+	public class GoToHandlrAction : IActionWithExecuteRequirement, IExecutableAction, IInsertLast<NavigateMenu>
 	{
 		private readonly IHandlrNavigator _handlrNavigator;
 
