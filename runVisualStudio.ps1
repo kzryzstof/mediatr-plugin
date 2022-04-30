@@ -76,12 +76,19 @@ if (!(Test-Path "$UserProjectXmlFile")) {
 
     # Install plugin
     $PluginRepository = "$env:LOCALAPPDATA\JetBrains\plugins"
-    Remove-Item "$PluginRepository\${PluginId}.${Version}" -Recurse -ErrorAction Ignore
+    $Test = "$PluginRepository\${PluginId}.${Version}"
+    Remove-Item $Test -Recurse -ErrorAction Ignore
+
+    Write-Output "**************" + $Test
+    
     Invoke-Exe $MSBuildPath "/t:Restore;Rebuild;Pack" "$SolutionPath" "/v:minimal" "/p:PackageVersion=$Version" "/p:PackageOutputPath=`"$OutputDirectory`""
     Invoke-Exe $NuGetPath install $PluginId -OutputDirectory "$PluginRepository" -Source "$OutputDirectory" -DependencyVersion Ignore
 
     Write-Output "Re-installing experimental hive"
     Invoke-Exe "$InstallerFile" "/VsVersion=$VisualStudioMajorVersion.0" "/SpecificProductNames=ReSharper" "/Hive=$RootSuffix" "/Silent=True"
+
+    Write-Output "**************" + $Test
+
 } else {
     Write-Warning "Plugin is already installed. To trigger reinstall, delete $UserProjectXmlFile."
 }
