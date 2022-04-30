@@ -4,7 +4,6 @@
 // May be used only in accordance with a valid Source Code License Agreement.
 // 
 // Last change: 28/12/2021 @ 09:15
-// Last author: Christophe Commeyne
 // ==========================================================================
 
 using System.Linq;
@@ -17,12 +16,8 @@ using JetBrains.Util.DataStructures;
 
 namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR.ReSharper.Psi
 {
-    #region Class
-
     internal static class DeclaredElementExtensions
     {
-        #region Public Methods
-
         public static (bool found, ICSharpFile? csharpFile) FindCSharpFile(this IDeclaredElement declaredElement)
         {
             HybridCollection<IPsiSourceFile> sourceFiles = declaredElement.GetSourceFiles();
@@ -32,16 +27,12 @@ namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR.ReSharper.Psi
             if (sourceFile is null)
                 return (false, null);
 
-            ICSharpFile? csharpFile = sourceFile
+            var csharpFile = sourceFile
                 .GetPsiFiles<CSharpLanguage>()
                 .SafeOfType<ICSharpFile>()
                 .SingleOrDefault();
 
             return (csharpFile is not null, csharpFile);
         }
-
-        #endregion
     }
-
-    #endregion
 }

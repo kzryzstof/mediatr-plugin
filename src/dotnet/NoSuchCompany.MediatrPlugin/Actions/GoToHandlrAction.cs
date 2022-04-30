@@ -4,7 +4,6 @@
 // May be used only in accordance with a valid Source Code License Agreement.
 // 
 // Last change: 30/12/2021 @ 10:23
-// Last author: Christophe Commeyne
 // ==========================================================================
 
 using JetBrains.Application.DataContext;
@@ -20,27 +19,15 @@ using NoSuchCompany.ReSharperPlugin.FindMyHandlR.Services;
 
 namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR.Actions
 {
-    #region Class
-
     [Action("GoToHandlrAction", "Go to the HandlR")]
     public class GoToHandlrAction : IActionWithExecuteRequirement, IExecutableAction
     {
-        #region Constants
-
         private readonly IHandlrNavigator _handlrNavigator;
-
-        #endregion
-
-        #region Constructors
 
         public GoToHandlrAction()
         {
             _handlrNavigator = new HandlrNavigator(new MediatR());
         }
-
-        #endregion
-
-        #region Public Methods
 
         public void Execute(IDataContext context, DelegateExecute nextExecute)
         {
@@ -69,10 +56,6 @@ namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR.Actions
             return IsMediatrRequestSelected(context);
         }
 
-        #endregion
-
-        #region Private Methods
-
         private bool IsMediatrRequestSelected(IDataContext context)
         {
             var selectedTreeNode = context.GetSelectedTreeNode<ITreeNode>();
@@ -85,9 +68,5 @@ namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR.Actions
 
             return true;
         }
-
-        #endregion
     }
-
-    #endregion
 }

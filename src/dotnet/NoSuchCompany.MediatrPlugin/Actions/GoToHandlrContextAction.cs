@@ -4,7 +4,6 @@
 // May be used only in accordance with a valid Source Code License Agreement.
 // 
 // Last change: 30/12/2021 @ 10:26
-// Last author: Christophe Commeyne
 // ==========================================================================
 
 using System;
@@ -21,8 +20,6 @@ using NoSuchCompany.ReSharperPlugin.FindMyHandlR.Services;
 
 namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR.Actions
 {
-    #region Class
-
     [ContextAction
     (
         Name = "Go to HandlR",
@@ -33,30 +30,21 @@ namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR.Actions
     )]
     public sealed class GoToHandlrContextAction : ContextActionBase
     {
-        #region Constants
-
         private readonly IHandlrNavigator _handlrNavigator;
 
         private readonly IIdentifier _mediatrRequestIdentifier;
 
-        #endregion
-
-        #region Properties
-
         public override string Text => "Go to HandlR";
-
-        #endregion
-
-        #region Constructors
 
         /// <param name="dataProvider"></param>
         /// <param name="handlrNavigator"></param>
         /// <exception cref="ArgumentNullException">
-        /// Thrown if:
-        /// - The <paramref name="dataProvider" /> instance is null.
-        /// - The <paramref name="handlrNavigator" /> instance is null.
+        ///     Thrown if:
+        ///     - The <paramref name="dataProvider" /> instance is null.
+        ///     - The <paramref name="handlrNavigator" /> instance is null.
         /// </exception>
-        internal GoToHandlrContextAction(LanguageIndependentContextActionDataProvider dataProvider, IHandlrNavigator handlrNavigator)
+        internal GoToHandlrContextAction(LanguageIndependentContextActionDataProvider dataProvider,
+            IHandlrNavigator handlrNavigator)
         {
             Guard.ThrowIfIsNull(dataProvider, nameof(dataProvider));
             Guard.ThrowIfIsNull(handlrNavigator, nameof(handlrNavigator));
@@ -73,12 +61,8 @@ namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR.Actions
         {
         }
 
-        #endregion
-
-        #region Public Methods
-
         /// <summary>
-        /// Finds out whether the selected type implements MediatR's 'IBaseRequest'.
+        ///     Finds out whether the selected type implements MediatR's 'IBaseRequest'.
         /// </summary>
         /// <param name="_"></param>
         /// <returns></returns>
@@ -89,10 +73,6 @@ namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR.Actions
             return _mediatrRequestIdentifier is not NullIdentifier;
         }
 
-        #endregion
-
-        #region Protected Methods
-
         protected override Action<ITextControl> ExecutePsiTransaction(ISolution solution, IProgressIndicator progress)
         {
             Logger.Instance.Log(LoggingLevel.WARN, "ExecutePsiTransaction");
@@ -102,15 +82,12 @@ namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR.Actions
             return DefaultActions.Empty;
         }
 
-        #endregion
-
-        #region Private Methods
-
         private IIdentifier GetSelectedMediatrRequest(IContextActionDataProvider dataProvider)
         {
             if (dataProvider.GetSelectedElement<ITreeNode>() is not IIdentifier mediatrRequestIdentifier)
             {
-                Logger.Instance.Log(LoggingLevel.VERBOSE, $"The selected tree node is not an instance of {nameof(IIdentifier)}.");
+                Logger.Instance.Log(LoggingLevel.VERBOSE,
+                    $"The selected tree node is not an instance of {nameof(IIdentifier)}.");
                 return new NullIdentifier(dataProvider.PsiModule);
             }
 
@@ -122,9 +99,5 @@ namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR.Actions
 
             return mediatrRequestIdentifier;
         }
-
-        #endregion
     }
-
-    #endregion
 }
