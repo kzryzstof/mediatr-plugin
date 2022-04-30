@@ -39,9 +39,9 @@ namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR.Actions
         /// <param name="dataProvider"></param>
         /// <param name="handlrNavigator"></param>
         /// <exception cref="ArgumentNullException">
-        ///     Thrown if:
-        ///     - The <paramref name="dataProvider" /> instance is null.
-        ///     - The <paramref name="handlrNavigator" /> instance is null.
+        /// Thrown if:
+        /// - The <paramref name="dataProvider" /> instance is null.
+        /// - The <paramref name="handlrNavigator" /> instance is null.
         /// </exception>
         internal GoToHandlrContextAction(LanguageIndependentContextActionDataProvider dataProvider,
             IHandlrNavigator handlrNavigator)
@@ -62,7 +62,7 @@ namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR.Actions
         }
 
         /// <summary>
-        ///     Finds out whether the selected type implements MediatR's 'IBaseRequest'.
+        /// Finds out whether the selected type implements MediatR's 'IBaseRequest'.
         /// </summary>
         /// <param name="_"></param>
         /// <returns></returns>
