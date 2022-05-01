@@ -4,7 +4,6 @@
 // May be used only in accordance with a valid Source Code License Agreement.
 // 
 // Last change: 30/12/2021 @ 10:22
-// Last author: Christophe Commeyne
 // ==========================================================================
 
 using System;
@@ -19,123 +18,109 @@ using NoSuchCompany.ReSharperPlugin.FindMyHandlR.ReSharper.Psi.Tree;
 
 namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR.Services
 {
-    #region Class
+	internal sealed class HandlrNavigator : IHandlrNavigator
+	{
+		private readonly IMediatR _mediatR;
 
-    internal sealed class HandlrNavigator : IHandlrNavigator
-    {
-        #region Constants
+		public HandlrNavigator(IMediatR mediatR)
+		{
+			Guard.ThrowIfIsNull(mediatR, nameof(mediatR));
 
-        private readonly IMediatR _mediatR;
+			_mediatR = mediatR;
+		}
 
-        #endregion
+		public bool IsRequest(IIdentifier identifier)
+		{
+			Guard.ThrowIfIsNull(identifier, nameof(identifier));
 
-        #region Constructors
+			return _mediatR.IsRequest(identifier);
+		}
 
-        public HandlrNavigator(IMediatR mediatR)
-        {
-            Guard.ThrowIfIsNull(mediatR, nameof(mediatR));
+		public void Navigate(IIdentifier request)
+		{
+			Guard.ThrowIfIsNull(request, nameof(request));
 
-            _mediatR = mediatR;
-        }
+			GoToHandler(request);
+		}
 
-        #endregion
+		private static (bool fileFound, ICSharpFile? csharpFile) FindCSharpFile(IDeclaredElement typeElement)
+		{
+			var (fileFound, csharpFile) = typeElement.FindCSharpFile();
 
-        #region Public Methods
+			if (!fileFound)
+				Logger.Instance.Log(LoggingLevel.WARN, "The C# source file of the MediatR handler could not be found.");
+			else
+				Logger.Instance.Log(LoggingLevel.WARN,
+					$"The C# source file of the MediatR handler has been found: '{csharpFile!.GetSourceFile()!.DisplayName}'");
 
-        public bool IsRequest(IIdentifier identifier)
-        {
-            Guard.ThrowIfIsNull(identifier, nameof(identifier));
+			return (fileFound, csharpFile);
+		}
 
-            return _mediatR.IsRequest(identifier);
-        }
+		private (bool handlerFound, ITypeElement? typeElement) FindHandler(IIdentifier selectedIdentifier)
+		{
+			var mediatrHandlerTypeElement = _mediatR.FindHandler(selectedIdentifier);
 
-        public void Navigate(IIdentifier request)
-        {
-            Guard.ThrowIfIsNull(request, nameof(request));
+			if (mediatrHandlerTypeElement is null)
+				Logger.Instance.Log(LoggingLevel.WARN,
+					$"No MediatR handler using the type '{selectedIdentifier.Name}' has been found.");
+			else
+				Logger.Instance.Log(LoggingLevel.WARN,
+					$"A MediatR handler using the type '{selectedIdentifier.Name}' has been found: '{mediatrHandlerTypeElement.GetClrName().FullName}'");
 
-            GoToHandler(request);
-        }
+			return (mediatrHandlerTypeElement is not null, mediatrHandlerTypeElement);
+		}
 
-        #endregion
+		private (bool nodeFound, ITreeNode? treeNode) FindTreeNode(ITypeElement typeElement, ICSharpFile csharpFile)
+		{
+			var treeNode = csharpFile.GetTreeNode(typeElement.GetFullname());
 
-        #region Private Methods
+			if (treeNode is null)
+				Logger.Instance.Log(LoggingLevel.WARN,
+					$"The tree node for the type '{typeElement.ShortName}' could not be found in the file '{csharpFile.GetSourceFile()!.DisplayName}'.");
+			else
+				Logger.Instance.Log(LoggingLevel.WARN,
+					$"The tree node for the type '{typeElement.ShortName}' has been found in the file '{csharpFile.GetSourceFile()!.DisplayName}'.");
 
-        private (bool fileFound, ICSharpFile? csharpFile) FindCSharpFile(IDeclaredElement typeElement)
-        {
-            (bool fileFound, ICSharpFile? csharpFile) = typeElement.FindCSharpFile();
+			return (treeNode is not null, treeNode);
+		}
 
-            if (!fileFound)
-                Logger.Instance.Log(LoggingLevel.WARN, "The C# source file of the MediatR handler could not be found.");
-            else
-                Logger.Instance.Log(LoggingLevel.WARN, $"The C# source file of the MediatR handler has been found: '{csharpFile!.GetSourceFile()!.DisplayName}'");
+		private void GoToHandler(IIdentifier selectedIdentifier)
+		{
+			try
+			{
+				Logger.Instance.Log(LoggingLevel.WARN,
+					$"Looking for a possible MediatR handler that is using the type '{selectedIdentifier.Name}'");
 
-            return (fileFound, csharpFile);
-        }
+				//  Finds the MediatR handler for the selected request.
+				var (handlerTypeFound, mediatrHandlerTypeElement) = FindHandler(selectedIdentifier);
 
-        private (bool handlerFound, ITypeElement? typeElement) FindHandler(IIdentifier selectedIdentifier)
-        {
-            ITypeElement? mediatrHandlerTypeElement = _mediatR.FindHandler(selectedIdentifier);
+				if (!handlerTypeFound)
+					return;
 
-            if (mediatrHandlerTypeElement is null)
-                Logger.Instance.Log(LoggingLevel.WARN, $"No MediatR handler using the type '{selectedIdentifier.Name}' has been found.");
-            else
-                Logger.Instance.Log(LoggingLevel.WARN, $"A MediatR handler using the type '{selectedIdentifier.Name}' has been found: '{mediatrHandlerTypeElement.GetClrName().FullName}'");
+				//  Finds the C# file where the MediatR handler is stored.
+				var (fileFound, csharpFile) = FindCSharpFile(mediatrHandlerTypeElement!);
 
-            return (mediatrHandlerTypeElement is not null, mediatrHandlerTypeElement);
-        }
+				if (!fileFound)
+					return;
 
-        private (bool nodeFound, ITreeNode? treeNode) FindTreeNode(ITypeElement typeElement, ICSharpFile csharpFile)
-        {
-            ITreeNode? treeNode = csharpFile.GetTreeNode(typeElement.GetFullname());
+				//  Finds the tree node of the handler in that file.
+				var (nodeFound, treeNode) = FindTreeNode(mediatrHandlerTypeElement!, csharpFile!);
 
-            if (treeNode is null)
-                Logger.Instance.Log(LoggingLevel.WARN, $"The tree node for the type '{typeElement.ShortName}' could not be found in the file '{csharpFile.GetSourceFile()!.DisplayName}'.");
-            else
-                Logger.Instance.Log(LoggingLevel.WARN, $"The tree node for the type '{typeElement.ShortName}' has been found in the file '{csharpFile.GetSourceFile()!.DisplayName}'.");
+				if (!nodeFound)
+					return;
 
-            return (treeNode is not null, treeNode);
-        }
+				//  Go to the file!
+				NavigateToFile(treeNode!);
+			}
+			catch (Exception unhandledException)
+			{
+				Logger.Instance.Log(LoggingLevel.ERROR, unhandledException.ToString());
+			}
+		}
 
-        private void GoToHandler(IIdentifier selectedIdentifier)
-        {
-            try
-            {
-                Logger.Instance.Log(LoggingLevel.WARN, $"Looking for a possible MediatR handler that is using the type '{selectedIdentifier.Name}'");
-
-                //  Finds the MediatR handler for the selected request.
-                (bool handlerTypeFound, ITypeElement? mediatrHandlerTypeElement) = FindHandler(selectedIdentifier);
-
-                if (!handlerTypeFound)
-                    return;
-
-                //  Finds the C# file where the MediatR handler is stored.
-                (bool fileFound, ICSharpFile? csharpFile) = FindCSharpFile(mediatrHandlerTypeElement!);
-
-                if (!fileFound)
-                    return;
-
-                //  Finds the tree node of the handler in that file.
-                (bool nodeFound, ITreeNode? treeNode) = FindTreeNode(mediatrHandlerTypeElement!, csharpFile!);
-
-                if (!nodeFound)
-                    return;
-
-                //  Go to the file!
-                NavigateToFile(treeNode!);
-            }
-            catch (Exception unhandledException)
-            {
-                Logger.Instance.Log(LoggingLevel.ERROR, unhandledException.ToString());
-            }
-        }
-
-        private void NavigateToFile(ITreeNode treeNode)
-        {
-            treeNode.NavigateToTreeNode(true);
-        }
-
-        #endregion
-    }
-
-    #endregion
+		private static void NavigateToFile(ITreeNode treeNode)
+		{
+			treeNode.NavigateToTreeNode(true);
+		}
+	}
 }

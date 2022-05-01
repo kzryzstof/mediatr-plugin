@@ -4,7 +4,6 @@
 // May be used only in accordance with a valid Source Code License Agreement.
 // 
 // Last change: 27/12/2021 @ 20:32
-// Last author: Christophe Commeyne
 // ==========================================================================
 
 using System;
@@ -23,15 +22,65 @@ namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR.ReSharper.Psi.Tree
     internal sealed class NullIdentifier : IIdentifier
     {
         private readonly IPsiModule _psiModule;
-    
+
+        public ITreeNode FirstChild { get; }
+
+        public PsiLanguageType Language { get; }
+
+        public ITreeNode LastChild { get; }
+
+        public string Name => "Null Identifier";
+
+        public ITreeNode NextSibling { get; }
+
+        public NodeType NodeType { get; }
+
+        public ITreeNode Parent { get; }
+
+        public NodeUserData PersistentUserData { get; }
+
+        public ITreeNode PrevSibling { get; }
+
+        public NodeUserData UserData { get; }
+
         public NullIdentifier(IPsiModule psiModule)
         {
             Guard.ThrowIfIsNull(psiModule, nameof(psiModule));
 
             _psiModule = psiModule;
-
         }
-        public IPsiServices GetPsiServices()
+
+        public bool Contains(ITreeNode other)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ITreeNode FindNodeAt(TreeTextRange treeRange)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IReadOnlyCollection<ITreeNode> FindNodesAt(TreeOffset treeOffset)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ITreeNode FindTokenAt(TreeOffset treeTextOffset)
+        {
+            throw new NotImplementedException();
+        }
+
+        public TTreeNode GetContainingNode<TTreeNode>(bool returnThis = false) where TTreeNode : ITreeNode
+        {
+            throw new NotImplementedException();
+        }
+
+        public ReferenceCollection GetFirstClassReferences()
+        {
+            throw new NotImplementedException();
+        }
+
+        public DocumentRange GetNavigationRange()
         {
             throw new NotImplementedException();
         }
@@ -41,109 +90,59 @@ namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR.ReSharper.Psi.Tree
             return _psiModule;
         }
 
+        public IPsiServices GetPsiServices()
+        {
+            throw new NotImplementedException();
+        }
+
         public IPsiSourceFile GetSourceFile()
         {
-            throw new System.NotImplementedException();
-        }
-
-        public ReferenceCollection GetFirstClassReferences()
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public void ProcessDescendantsForResolve(IRecursiveElementProcessor processor)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public TTreeNode GetContainingNode<TTreeNode>(bool returnThis = false) where TTreeNode : ITreeNode
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public bool Contains(ITreeNode other)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public bool IsPhysical()
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public bool IsValid()
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public bool IsFiltered()
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public DocumentRange GetNavigationRange()
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public TreeOffset GetTreeStartOffset()
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public int GetTextLength()
-        {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public StringBuilder GetText(StringBuilder to)
         {
-            throw new System.NotImplementedException();
-        }
-
-        public IBuffer GetTextAsBuffer()
-        {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public string GetText()
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
-        public ITreeNode FindNodeAt(TreeTextRange treeRange)
+        public IBuffer GetTextAsBuffer()
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
-        public IReadOnlyCollection<ITreeNode> FindNodesAt(TreeOffset treeOffset)
+        public int GetTextLength()
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
-        public ITreeNode FindTokenAt(TreeOffset treeTextOffset)
+        public TreeOffset GetTreeStartOffset()
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
-        public ITreeNode Parent { get; }
+        public bool IsFiltered()
+        {
+            throw new NotImplementedException();
+        }
 
-        public ITreeNode FirstChild { get; }
+        public bool IsPhysical()
+        {
+            throw new NotImplementedException();
+        }
 
-        public ITreeNode LastChild { get; }
+        public bool IsValid()
+        {
+            throw new NotImplementedException();
+        }
 
-        public ITreeNode NextSibling { get; }
-
-        public ITreeNode PrevSibling { get; }
-
-        public NodeType NodeType { get; }
-
-        public PsiLanguageType Language { get; }
-
-        public NodeUserData UserData { get; }
-
-        public NodeUserData PersistentUserData { get; }
-
-        public string Name => "Null Identifier";
+        public void ProcessDescendantsForResolve(IRecursiveElementProcessor processor)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

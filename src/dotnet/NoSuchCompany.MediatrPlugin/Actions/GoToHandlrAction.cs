@@ -1,93 +1,68 @@
-// ==========================================================================
-// Copyright (C) 2021 by NoSuch Company.
-// All rights reserved.
-// May be used only in accordance with a valid Source Code License Agreement.
-// 
-// Last change: 30/12/2021 @ 10:23
-// Last author: Christophe Commeyne
-// ==========================================================================
-
-using JetBrains.Application.DataContext;
+﻿using JetBrains.Application.DataContext;
 using JetBrains.Application.UI.Actions;
 using JetBrains.Application.UI.ActionsRevised.Menu;
 using JetBrains.Application.UI.ActionSystem.ActionsRevised.Menu;
 using JetBrains.Diagnostics;
+using JetBrains.PsiFeatures.UIInteractive.Features.Navigation.Features.Goto;
+using JetBrains.ReSharper.Feature.Services.Menu;
 using JetBrains.ReSharper.Feature.Services.Navigation.ContextNavigation;
+using JetBrains.ReSharper.Psi;
+using JetBrains.ReSharper.Psi.ActionExtensions;
 using JetBrains.ReSharper.Psi.Files;
 using JetBrains.ReSharper.Psi.Tree;
 using NoSuchCompany.ReSharperPlugin.FindMyHandlR.Diagnostics;
 using NoSuchCompany.ReSharperPlugin.FindMyHandlR.Services;
 
-namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR.Actions
+namespace NoSuchCompany.ReSharper.MediatrPlugin.Actions
 {
-    #region Class
+	[ActionWithPsiContext("GoToHandlrAction", "Go to HandlR", Kind = CompilationContextKind.Global, IdeaShortcuts = new [] {"Shift+F10"}, VsShortcuts = new [] {"Shift+F10"})]
+	public class GoToHandlrAction : IActionWithExecuteRequirement, IExecutableAction, IInsertLast<NavigateMenu>
+	{
+		private readonly IHandlrNavigator _handlrNavigator;
 
-    [Action("GoToHandlrAction", "Go to the HandlR")]
-    public class GoToHandlrAction : IActionWithExecuteRequirement, IExecutableAction
-    {
-        #region Constants
+		public GoToHandlrAction()
+		{
+			_handlrNavigator = new HandlrNavigator(new MediatR());
+		}
 
-        private readonly IHandlrNavigator _handlrNavigator;
+		private bool IsMediatrRequestSelected(IDataContext context)
+		{
+			var selectedTreeNode = context.GetSelectedTreeNode<ITreeNode>();
 
-        #endregion
+			if (selectedTreeNode is not IIdentifier selectedIdentifier || !_handlrNavigator.IsRequest(selectedIdentifier))
+			{
+				Logger.Instance.Log(LoggingLevel.WARN, "Selected element is not an MediatR request");
+				return false;
+			}
 
-        #region Constructors
+			return true;
+		}
 
-        public GoToHandlrAction()
-        {
-            _handlrNavigator = new HandlrNavigator(new MediatR());
-        }
+		public void Execute(IDataContext context, DelegateExecute nextExecute)
+		{
+			Guard.ThrowIfIsNull(context, nameof(context));
 
-        #endregion
+			var selectedTreeNode = context.GetSelectedTreeNode<ITreeNode>();
 
-        #region Public Methods
+			if (selectedTreeNode is not IIdentifier selectedIdentifier)
+			{
+				Logger.Instance.Log(LoggingLevel.WARN, $"Selected element is not an instance {nameof(IIdentifier)}");
+				return;
+			}
 
-        public void Execute(IDataContext context, DelegateExecute nextExecute)
-        {
-            Guard.ThrowIfIsNull(context, nameof(context));
+			_handlrNavigator.Navigate(selectedIdentifier);
+		}
 
-            var selectedTreeNode = context.GetSelectedTreeNode<ITreeNode>();
+		public IActionRequirement GetRequirement(IDataContext dataContext)
+		{
+			return CommitAllDocumentsRequirement.TryGetInstance(dataContext);
+		}
 
-            if (selectedTreeNode is not IIdentifier selectedIdentifier)
-            {
-                Logger.Instance.Log(LoggingLevel.WARN, $"Selected element is not an instance {nameof(IIdentifier)}");
-                return;
-            }
+		public bool Update(IDataContext context, ActionPresentation presentation, DelegateUpdate nextUpdate)
+		{
+			Guard.ThrowIfIsNull(context, nameof(context));
 
-            _handlrNavigator.Navigate(selectedIdentifier);
-        }
-
-        public IActionRequirement GetRequirement(IDataContext dataContext)
-        {
-            return CommitAllDocumentsRequirement.TryGetInstance(dataContext);
-        }
-
-        public bool Update(IDataContext context, ActionPresentation presentation, DelegateUpdate nextUpdate)
-        {
-            Guard.ThrowIfIsNull(context, nameof(context));
-
-            return IsMediatrRequestSelected(context);
-        }
-
-        #endregion
-
-        #region Private Methods
-
-        private bool IsMediatrRequestSelected(IDataContext context)
-        {
-            var selectedTreeNode = context.GetSelectedTreeNode<ITreeNode>();
-
-            if (selectedTreeNode is not IIdentifier selectedIdentifier || !_handlrNavigator.IsRequest(selectedIdentifier))
-            {
-                Logger.Instance.Log(LoggingLevel.WARN, "Selected element is not an MediatR request");
-                return false;
-            }
-
-            return true;
-        }
-
-        #endregion
-    }
-
-    #endregion
+			return IsMediatrRequestSelected(context);
+		}
+	}
 }

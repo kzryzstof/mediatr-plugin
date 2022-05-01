@@ -4,7 +4,6 @@
 // May be used only in accordance with a valid Source Code License Agreement.
 // 
 // Last change: 27/12/2021 @ 20:00
-// Last author: Christophe Commeyne
 // ==========================================================================
 
 using JetBrains.ReSharper.Psi;
@@ -12,18 +11,10 @@ using JetBrains.ReSharper.Psi.Tree;
 
 namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR.Services
 {
-    #region Interface
-
     public interface IMediatR
     {
-        #region Methods
-
         ITypeElement? FindHandler(IIdentifier identifier);
 
         bool IsRequest(IIdentifier identifier);
-
-        #endregion
     }
-
-    #endregion
 }
