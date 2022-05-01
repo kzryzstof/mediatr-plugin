@@ -3,6 +3,7 @@ using JetBrains.Application.UI.Actions;
 using JetBrains.Application.UI.ActionsRevised.Menu;
 using JetBrains.Application.UI.ActionSystem.ActionsRevised.Menu;
 using JetBrains.Diagnostics;
+using JetBrains.PsiFeatures.UIInteractive.Features.Navigation.Features.Goto;
 using JetBrains.ReSharper.Feature.Services.Menu;
 using JetBrains.ReSharper.Feature.Services.Navigation.ContextNavigation;
 using JetBrains.ReSharper.Psi.Files;
@@ -12,8 +13,8 @@ using NoSuchCompany.ReSharperPlugin.FindMyHandlR.Services;
 
 namespace NoSuchCompany.ReSharper.MediatrPlugin.Actions
 {
-	[Action("GoToHandlrAction", "Go to the HandlR")]
-	public class GoToHandlrAction : IActionWithExecuteRequirement, IExecutableAction, IInsertLast<NavigateMenu>
+	[Action("GoToHandlrAction", "Go to the HandlR", IdeaShortcuts = new [] {"Shift+F10"}, VsShortcuts = new [] {"Shift+F10"})]
+	public class GoToHandlrAction : IActionWithExecuteRequirement, IExecutableAction, IInsertAfter<NavigateMenu, GotoActionAction>
 	{
 		private readonly IHandlrNavigator _handlrNavigator;
 
