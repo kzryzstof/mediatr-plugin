@@ -17,7 +17,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="JetBrains.Psi.Features.UIInteractive.Features" Version="221.0.20220309.121150-eap06" />
+    <PackageReference Include="JetBrains.Psi.Features.UIInteractive.Features" Version="222.0.20220517.144020-eap01" />
     <PackageReference Include="JetBrains.Rider.SDK" Version="$(SdkVersion)" />
   </ItemGroup>
 
