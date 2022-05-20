@@ -1,4 +1,4 @@
-# FindMyHandlR for Rider and ReSharper
+# MediatR Extension for Rider and ReSharper
 
 [![Version](https://img.shields.io/jetbrains/plugin/v/ca.nosuchcompany.rider.plugins.mediatr)](https://plugins.jetbrains.com/plugin/18313-mediatr-extensions)
 [![Version](https://img.shields.io/resharper/v/ca.nosuchcompany.mediatrplugin)](https://plugins.jetbrains.com/plugin/18347-mediatr-extensions)
