@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## 22.09.2004
+- [Issue 40](https://github.com/kzryzstof/mediatr-plugin/issues/40): Handle identical class names in different namespaces.
+
 ## 22.05.20
 - Support for 2022.2.X
 
