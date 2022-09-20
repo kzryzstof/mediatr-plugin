@@ -27,7 +27,7 @@ namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR.ReSharper.Psi
             if (sourceFile is null)
                 return (false, null);
 
-            var csharpFile = sourceFile
+            ICSharpFile? csharpFile = sourceFile
                 .GetPsiFiles<CSharpLanguage>()
                 .SafeOfType<ICSharpFile>()
                 .SingleOrDefault();
