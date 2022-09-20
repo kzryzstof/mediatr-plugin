@@ -45,6 +45,8 @@
   <ItemGroup>
     <Compile Include="GetEntityRequest.cs" />
     <Compile Include="GetEntityResponse.cs" />
+    <Compile Include="OtherNamespace\GetEntityRequest.cs" />
+    <Compile Include="OtherNamespace\GetEntityResponse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StartStreamingRequest.cs" />
     <Compile Include="TriggerDeletionRequest.cs" />

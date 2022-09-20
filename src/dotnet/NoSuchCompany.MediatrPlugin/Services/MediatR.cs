@@ -15,6 +15,7 @@ using JetBrains.Lifetimes;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CSharp;
 using JetBrains.ReSharper.Psi.CSharp.Tree;
+using JetBrains.ReSharper.Psi.Resolve;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.ReSharper.Psi.Util;
 using NoSuchCompany.ReSharperPlugin.FindMyHandlR.Diagnostics;
@@ -29,18 +30,22 @@ namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR.Services
         {
             Guard.ThrowIfIsNull(identifier, nameof(identifier));
 
-            var psiServices = identifier.GetPsiServices();
+            IPsiServices psiServices = identifier.GetPsiServices();
 
-            var mediatrRequestHandlerType = CSharpTypeFactory.CreateType("MediatR.IRequestHandler<in TRequest, TResponse>", identifier);
+            IType mediatrRequestHandlerType = CSharpTypeFactory.CreateType("MediatR.IRequestHandler<in TRequest, TResponse>", identifier);
             var mediatrRequestHandlerDeclaredType = (IDeclaredType) mediatrRequestHandlerType;
-            var resolveResult = mediatrRequestHandlerDeclaredType.Resolve();
+            IResolveResult resolveResult = mediatrRequestHandlerDeclaredType.Resolve();
 
             var inheritorsConsumer = new InheritorsConsumer();
 
             psiServices
                 .Finder
-                .FindInheritors(mediatrRequestHandlerType.GetTypeElement(), inheritorsConsumer,
-                    new ProgressIndicator(Lifetime.Eternal));
+                .FindInheritors
+                (
+                    mediatrRequestHandlerType.GetTypeElement(), 
+                    inheritorsConsumer,
+                    new ProgressIndicator(Lifetime.Eternal)
+                );
 
             //  I do not know why but FindInheritors and GetPossibleInheritors do not return all the handlers by themselves.
             //  I have to union both results of each to get all the actual IRequestHandler implementations.
@@ -52,10 +57,9 @@ namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR.Services
                     .GetPossibleInheritors(resolveResult.DeclaredElement.ShortName)
                 );
 
-            Logger.Instance.Log(LoggingLevel.WARN,
-                $"Possible inheritors found: {string.Join(",", results.Select(i => i.GetClrName().FullName))}");
+            Logger.Instance.Log(LoggingLevel.WARN, $"Possible inheritors found: {string.Join(",", results.Select(i => i.GetClrName().FullName))}");
 
-            var inheritorTypeElement = SelectInheritor(results, identifier);
+            ITypeElement? inheritorTypeElement = SelectInheritor(results, identifier);
 
             return inheritorTypeElement;
         }
@@ -64,42 +68,44 @@ namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR.Services
         {
             Guard.ThrowIfIsNull(identifier, nameof(identifier));
 
-            var declaredType = identifier.ToDeclaredType();
+            IDeclaredType declaredType = identifier.ToDeclaredType();
 
-            var mediatrBaseRequestType = CSharpTypeFactory.CreateType("MediatR.IBaseRequest", declaredType.Module);
+            IType mediatrBaseRequestType = CSharpTypeFactory.CreateType("MediatR.IBaseRequest", declaredType.Module);
 
             if (declaredType.IsSubtypeOf((IDeclaredType) mediatrBaseRequestType))
             {
-                Logger.Instance.Log(LoggingLevel.VERBOSE,
-                    $"> The declared type '{declaredType.GetClrName().FullName}' is considered a subtype of '{mediatrBaseRequestType.GetScalarType()!.GetClrName().FullName}'");
+                Logger.Instance.Log(LoggingLevel.VERBOSE, $"> The declared type '{declaredType.GetClrName().FullName}' is considered a subtype of '{mediatrBaseRequestType.GetScalarType()!.GetClrName().FullName}'");
                 return true;
             }
 
-            Logger.Instance.Log(LoggingLevel.VERBOSE,
-                $"> The declared type '{declaredType.GetClrName().FullName}' is not considered a subtype of '{mediatrBaseRequestType.GetScalarType()!.GetClrName().FullName}'");
+            Logger.Instance.Log(LoggingLevel.VERBOSE, $"> The declared type '{declaredType.GetClrName().FullName}' is not considered a subtype of '{mediatrBaseRequestType.GetScalarType()!.GetClrName().FullName}'");
             return false;
         }
 
         private ITypeElement? SelectInheritor(IEnumerable<ITypeElement> inheritors, IIdentifier selectedIdentifier)
         {
-            foreach (var inheritor in inheritors)
+            IDeclaredType selectedDeclaredType = selectedIdentifier.ToDeclaredType();
+            string? selectedFullTypeName = selectedDeclaredType.GetClrName().FullName;
+            
+            Logger.Instance.Log(LoggingLevel.VERBOSE, $"Selected type: '{selectedFullTypeName}'");
+
+            foreach (ITypeElement? inheritor in inheritors)
             {
-                Logger.Instance.Log(LoggingLevel.WARN, $"Inheritor: '{inheritor.GetClrName().FullName}'");
+                Logger.Instance.Log(LoggingLevel.VERBOSE, $"Inheritor: '{inheritor.GetClrName().FullName}'");
 
                 if (inheritor is not IClass classInheritor)
                 {
-                    Logger.Instance.Log(LoggingLevel.WARN,
-                        $"Skipped: '{inheritor.GetClrName().FullName}' is not an IClass instance.");
+                    Logger.Instance.Log(LoggingLevel.VERBOSE, $"Skipped: '{inheritor.GetClrName().FullName}' is not an IClass instance.");
                     continue;
                 }
 
                 if (classInheritor.IsAbstract)
                 {
-                    Logger.Instance.Log(LoggingLevel.WARN, $"Skipped: '{inheritor.GetClrName().FullName}' is abstract.");
+                    Logger.Instance.Log(LoggingLevel.VERBOSE, $"Skipped: '{inheritor.GetClrName().FullName}' is abstract.");
                     continue;
                 }
 
-                var supportRequest = classInheritor
+                bool supportRequest = classInheritor
                     .GetDeclarations()
                     .Cast<IClassDeclaration>()
                     .SelectMany(classDeclaration => classDeclaration.InheritedTypeUsagesEnumerable)
@@ -110,15 +116,22 @@ namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR.Services
                     .SelectMany(treeNode => treeNode)
                     .Where(child => child is IUserTypeUsage)
                     .Cast<IUserTypeUsage>()
-                    .Any(userTypeUsage => string.Equals(userTypeUsage.ScalarTypeName.ShortName, selectedIdentifier.Name,
-                        StringComparison.CurrentCultureIgnoreCase));
+                    .Any(userTypeUsage =>
+                    {
+                        IDeclaredType declaredType = userTypeUsage.ScalarTypeName.NameIdentifier.ToDeclaredType();
+                        string? fullName = declaredType.GetClrName().FullName;
+                        
+                        Logger.Instance.Log(LoggingLevel.VERBOSE, $"--≥ '{fullName}'");
+                        return string.Equals(fullName, selectedFullTypeName, StringComparison.CurrentCultureIgnoreCase);
+                    });
 
                 if (!supportRequest)
                 {
-                    Logger.Instance.Log(LoggingLevel.WARN,
-                        $"Skipped: '{inheritor.GetClrName().FullName}' does not use '{selectedIdentifier.Name}'.");
+                    Logger.Instance.Log(LoggingLevel.VERBOSE, $"Skipped: '{inheritor.GetClrName().FullName}' does not use '{selectedIdentifier.Name}'.");
                     continue;
                 }
+
+                Logger.Instance.Log(LoggingLevel.VERBOSE, $"Found: '{inheritor.GetClrName().FullName}'.");
 
                 return inheritor;
             }
