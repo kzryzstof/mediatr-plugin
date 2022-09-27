@@ -3,7 +3,6 @@ using JetBrains.Application.UI.Actions;
 using JetBrains.Application.UI.ActionsRevised.Menu;
 using JetBrains.Application.UI.ActionSystem.ActionsRevised.Menu;
 using JetBrains.Diagnostics;
-using JetBrains.PsiFeatures.UIInteractive.Features.Navigation.Features.Goto;
 using JetBrains.ReSharper.Feature.Services.Menu;
 using JetBrains.ReSharper.Feature.Services.Navigation.ContextNavigation;
 using JetBrains.ReSharper.Psi;
