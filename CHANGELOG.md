@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## 22.11.25XX
+- [Issue 46](https://github.com/kzryzstof/mediatr-plugin/issues/46): Indirect IRequestHandler implementation support
+ 
 ## 22.09.26XX
 - Support for 2022.3
 
