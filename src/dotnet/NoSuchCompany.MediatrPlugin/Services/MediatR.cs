@@ -14,7 +14,9 @@ using JetBrains.Diagnostics;
 using JetBrains.Lifetimes;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CSharp;
+using JetBrains.ReSharper.Psi.CSharp.Conversions;
 using JetBrains.ReSharper.Psi.CSharp.Tree;
+using JetBrains.ReSharper.Psi.Modules;
 using JetBrains.ReSharper.Psi.Resolve;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.ReSharper.Psi.Util;
@@ -26,6 +28,8 @@ namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR.Services
 {
     internal sealed class MediatR : IMediatR
     {
+        private const string MediatrModuleName = "MediatR";
+        
         public ITypeElement? FindHandler(IIdentifier identifier)
         {
             Guard.ThrowIfIsNull(identifier, nameof(identifier));
@@ -38,11 +42,13 @@ namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR.Services
 
             var inheritorsConsumer = new InheritorsConsumer();
 
+            ITypeElement handlerTypeElement = mediatrRequestHandlerType.GetTypeElement()!;
+                
             psiServices
                 .Finder
                 .FindInheritors
                 (
-                    mediatrRequestHandlerType.GetTypeElement(), 
+                    handlerTypeElement, 
                     inheritorsConsumer,
                     new ProgressIndicator(Lifetime.Eternal)
                 );
@@ -67,12 +73,29 @@ namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR.Services
         public bool IsRequest(IIdentifier identifier)
         {
             Guard.ThrowIfIsNull(identifier, nameof(identifier));
-
+                
+            ICSharpTypeConversionRule typeConversionRule = identifier.GetPsiModule().GetTypeConversionRule();
+            
             IDeclaredType declaredType = identifier.ToDeclaredType();
 
-            IType mediatrBaseRequestType = CSharpTypeFactory.CreateType("MediatR.IBaseRequest", declaredType.Module);
+            IPsiModule? mediatrModule = identifier.GetPsiServices().Modules.GetModules().FirstOrDefault(module => string.Equals(module.Name, MediatrModuleName, StringComparison.OrdinalIgnoreCase));
 
-            if (declaredType.IsSubtypeOf((IDeclaredType) mediatrBaseRequestType))
+            if (mediatrModule == null)
+            {
+                Logger.Instance.Log(LoggingLevel.VERBOSE, $"> Unable to find a module starting with the name '{MediatrModuleName}'");
+                return false;
+            }
+
+            IType mediatrBaseRequestType = TypeFactory.CreateTypeByCLRName("MediatR.IBaseRequest", mediatrModule);
+
+            if (!mediatrBaseRequestType.IsResolved)
+            {
+                //  This happens if there are errors in the solution and ReSharper does not know about the MediatR module yet.
+                Logger.Instance.Log(LoggingLevel.VERBOSE, $"> The mediatR IBaseRequest type is not resolved");
+                return false;
+            }
+            
+            if (declaredType.IsSubtypeOf(mediatrBaseRequestType, typeConversionRule))
             {
                 Logger.Instance.Log(LoggingLevel.VERBOSE, $"> The declared type '{declaredType.GetClrName().FullName}' is considered a subtype of '{mediatrBaseRequestType.GetScalarType()!.GetClrName().FullName}'");
                 return true;
