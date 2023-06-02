@@ -46,7 +46,7 @@ stages:
               options: '-PPluginVersion=$(Build.BuildNumber)'
               tasks: ':prepareSandbox'
               publishJUnitResults: false
-              jdkVersionOption: 1.11
+              jdkVersionOption: 1.17
           
           - task: CopyFiles@2
             displayName: 'copy .jar file'

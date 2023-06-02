@@ -3,9 +3,9 @@ import org.apache.tools.ant.taskdefs.condition.Os
 
 plugins {
     id 'java'
-    id 'org.jetbrains.kotlin.jvm' version '1.7.21'
-    id 'org.jetbrains.intellij' version '1.10.0'     // https://github.com/JetBrains/gradle-intellij-plugin/releases
-    id 'com.jetbrains.rdgen' version '2022.3.3'    // https://www.myget.org/feed/rd-snapshots/package/maven/com.jetbrains.rd/rd-gen
+    id 'org.jetbrains.kotlin.jvm' version '1.8.21'  //  https://plugins.gradle.org/plugin/org.jetbrains.kotlin.jvm/1.8.21
+    id 'org.jetbrains.intellij' version '1.14.0'      // https://github.com/JetBrains/gradle-intellij-plugin/releases
+    id 'com.jetbrains.rdgen' version '2023.2.1'     // https://www.myget.org/feed/rd-snapshots/package/maven/com.jetbrains.rd/rd-gen
 }
 
 ext {
@@ -21,7 +21,7 @@ repositories {
 }
 
 wrapper {
-    gradleVersion = '7.5.1'
+    gradleVersion = '8.1.1'     //  https://services.gradle.org/distributions/
     distributionType = Wrapper.DistributionType.ALL
     distributionUrl = "https://cache-redirector.jetbrains.com/services.gradle.org/distributions/gradle-${gradleVersion}-all.zip"
 }
