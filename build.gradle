@@ -15,10 +15,6 @@ ext {
     }
 }
 
-java {
-    targetCompatibility = JavaVersion.17
-}
-
 repositories {
     maven { url 'https://cache-redirector.jetbrains.com/intellij-repository/snapshots' }
     maven { url 'https://cache-redirector.jetbrains.com/maven-central' }
