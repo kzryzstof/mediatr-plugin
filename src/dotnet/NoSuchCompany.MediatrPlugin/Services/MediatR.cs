@@ -20,6 +20,7 @@ using JetBrains.ReSharper.Psi.Modules;
 using JetBrains.ReSharper.Psi.Resolve;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.ReSharper.Psi.Util;
+using NoSuchCompany.ReSharper.MediatrPlugin.Actions;
 using NoSuchCompany.ReSharperPlugin.FindMyHandlR.Diagnostics;
 using NoSuchCompany.ReSharperPlugin.FindMyHandlR.ReSharper.Psi.Search;
 using NoSuchCompany.ReSharperPlugin.FindMyHandlR.ReSharper.Psi.Tree;
@@ -28,6 +29,15 @@ namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR.Services
 {
     internal sealed class MediatR : IMediatR
     {
+        private readonly IHandlrCreator _handlrCreator;
+
+        public MediatR(): this(new HandlrCreator()) { }
+
+        private MediatR(IHandlrCreator handlrCreator)
+        {
+            _handlrCreator = handlrCreator;
+        }
+
         private const string MediatrModuleName = "MediatR";
         
         public ITypeElement? FindHandler(IIdentifier identifier)
@@ -104,6 +114,9 @@ namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR.Services
             Logger.Instance.Log(LoggingLevel.VERBOSE, $"> The declared type '{declaredType.GetClrName().FullName}' is not considered a subtype of '{mediatrBaseRequestType.GetScalarType()!.GetClrName().FullName}'");
             return false;
         }
+
+        public IClassLikeDeclaration CreateHandlrFor(IClassLikeDeclaration requestTypeDeclaration) => _handlrCreator.CreateHandlrFor(requestTypeDeclaration);
+
 
         private ITypeElement? SelectInheritor(IEnumerable<ITypeElement> inheritors, IIdentifier selectedIdentifier)
         {

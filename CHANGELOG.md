@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## 23.07.20
+- New Extension creating handlers based on request type added
+
 ## 23.02.20XX
 - Support for 2023.1
 
