@@ -33,6 +33,15 @@ stages:
             inputs:
               version: 6.x
 
+          - task: JavaToolInstaller@0
+            inputs:
+              versionSpec: '20'
+              jdkArchitectureOption: 'x64'
+              jdkSourceOption: 'AzureStorage'
+              jdkFile: '<JDK FILE>'
+              jdkDestinationDirectory: '$(Agent.ToolsDirectory)/jdk'
+              cleanDestinationDirectory: true
+              
           - task: Bash@3
             displayName: 'update version (gradle & plugin.xml)'
             inputs:
