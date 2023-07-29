@@ -40,7 +40,7 @@ stages:
               azureStorageAccountName       : 'stpluginriderpipeline'
               azureContainerName            : 'jdk20'
               azureCommonVirtualFile        : 'jdk-20_macos-x64_bin.zip'
-              jdkDestinationDirectory       : '$(Agent.ToolsDirectory)/jdk'
+              jdkDestinationDirectory       : $(Agent.ToolsDirectory)/jdk
               cleanDestinationDirectory     : true
               
           - task: Bash@3
@@ -57,6 +57,7 @@ stages:
               tasks               : ':prepareSandbox'
               publishJUnitResults : false
               jdkVersionOption    : 1.20
+              jdkDirectory        : $(Agent.ToolsDirectory)/jdk
           
           - task: CopyFiles@2
             displayName: 'copy .jar file'
