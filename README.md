@@ -15,5 +15,9 @@
 At this point, another instance of Visual Studio should have been started.
 Go into ReSharper > Extension Manager and look for the MediatR extension plugin. It should be installed and have the version `9999.0`.
 
+**How to run on macOS**
+
+- Run the command `./gradlew :runIde` in a terminal window
+
 
 
