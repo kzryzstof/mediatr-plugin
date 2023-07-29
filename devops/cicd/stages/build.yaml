@@ -7,8 +7,6 @@ parameters:
     type: string
   - name: vmImage
     type: string
-  - name: EnforceBranchControlPolicy
-    type: boolean
 
 stages:
   - stage: '${{ parameters.name }}'
@@ -41,8 +39,7 @@ stages:
               azureResourceManagerEndpoint  : 'Azure (plugin-rider-pipeline)'
               azureStorageAccountName       : 'stpluginriderpipeline'
               azureContainerName            : 'jdk20'
-              azureCommonVirtualFile        : 'jdks/jdk20.zip'
-              jdkFile                       : 'jdk-20_macos-x64_bin.tar.gz'
+              azureCommonVirtualFile        : 'jdk-20_macos-x64_bin.tar.gz'
               jdkDestinationDirectory       : '$(Agent.ToolsDirectory)/jdk'
               cleanDestinationDirectory     : true
               

@@ -16,17 +16,10 @@ variables:
   - name: vmImageName
     value: 'macos-latest'
 
-parameters:
-  - name: EnforceBranchControlPolicy
-    displayName: Enforce Branch Control Policy
-    type: boolean
-    default: true
-
 stages:
   - template: 'stages/build.yaml'
     parameters:
-      name: Build
-      enforceBranchControlPolicy: ${{ parameters.EnforceBranchControlPolicy }}
-      pipelineEnvironmentVariables: '../environment_variables/build.yaml'
-      poolName: $(poolName)
-      vmImage: $(vmImageName)
+      name      : Build
+      poolName  : $(poolName)
+      vmImage   : $(vmImageName)
+      pipelineEnvironmentVariables  : '../environment_variables/build.yaml'    
