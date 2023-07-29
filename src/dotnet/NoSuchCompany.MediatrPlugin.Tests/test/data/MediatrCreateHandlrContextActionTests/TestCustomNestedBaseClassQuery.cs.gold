@@ -1,0 +1,26 @@
+﻿using MediatR;
+using System.Collections.Generic;
+
+namespace ClassLibrary1;
+
+public class SomeDto {}
+
+public abstract class BaseQuery<T> : IRequest<T>
+{
+}
+
+public abstract class GetItemsQuery<T> : BaseQuery<IReadOnlyCollection<T>>
+{
+}
+
+public class SomeQuery : GetItemsQuery<SomeDto>
+{
+}
+
+public class SomeQueryHandler : IRequestHandler<SomeQuery, IReadOnlyCollection<SomeDto>>
+{
+  public Task<IReadOnlyCollection<SomeDto>> Handle(SomeQuery request, CancellationToken cancellationToken)
+  {
+    {selstart}throw new NotImplementedException();{selend}
+  }
+}

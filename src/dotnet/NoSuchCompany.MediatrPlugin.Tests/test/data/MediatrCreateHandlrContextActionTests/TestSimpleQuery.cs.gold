@@ -1,0 +1,16 @@
+﻿using MediatR;
+namespace ClassLibrary1;
+
+public class SomeDto {}
+
+public class SomeQuery : IRequest<SomeDto>
+{
+}
+
+public class SomeQueryHandler : IRequestHandler<SomeQuery, SomeDto>
+{
+  public Task<SomeDto> Handle(SomeQuery request, CancellationToken cancellationToken)
+  {
+    {selstart}throw new NotImplementedException();{selend}
+  }
+}

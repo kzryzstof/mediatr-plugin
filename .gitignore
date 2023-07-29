@@ -24,3 +24,5 @@ _dotTrace*
 # Project
 /test-solution/.idea/
 /test-solution/packages/
+.idea
+*/**/Packages

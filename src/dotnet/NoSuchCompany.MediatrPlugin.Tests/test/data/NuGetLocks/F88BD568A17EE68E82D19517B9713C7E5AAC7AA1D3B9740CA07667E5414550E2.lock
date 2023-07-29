@@ -1,0 +1,5 @@
+﻿# Input (NuGetFramework=net7.0):
+# MediatR [12.1.0]
+MediatR 12.1.0
+MediatR.Contracts 2.0.1
+Microsoft.Extensions.DependencyInjection.Abstractions 6.0.0

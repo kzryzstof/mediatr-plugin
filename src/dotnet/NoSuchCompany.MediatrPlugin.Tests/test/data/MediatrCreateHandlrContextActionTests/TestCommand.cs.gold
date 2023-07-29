@@ -1,0 +1,14 @@
+﻿using MediatR;
+namespace ClassLibrary1;
+
+public class SomeCommand : IRequest
+{
+}
+
+public class SomeCommandHandler : IRequestHandler<SomeCommand>
+{
+  public Task Handle(SomeCommand request, CancellationToken cancellationToken)
+  {
+    {selstart}throw new NotImplementedException();{selend}
+  }
+}

@@ -9,10 +9,9 @@
 using System;
 using JetBrains.TextControl;
 
-namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR
+namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR;
+
+internal static class DefaultActions
 {
-    internal static class DefaultActions
-    {
-        public static readonly Action<ITextControl> Empty = _ => { };
-    }
+    public static readonly Action<ITextControl> Empty = _ => { };
 }
