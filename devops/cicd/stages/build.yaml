@@ -30,7 +30,7 @@ stages:
             displayName: 'install .net 6.0 SDK'
             inputs:
               version: 6.x
-
+  
           - task: JavaToolInstaller@0
             inputs:
               versionSpec           : '20'
@@ -57,7 +57,7 @@ stages:
               tasks               : ':prepareSandbox'
               publishJUnitResults : false
               jdkVersionOption    : 1.20
-              jdkDirectory        : $(Agent.ToolsDirectory)/jdk
+              jdkDirectory        : $(Agent.ToolsDirectory)/jdk/bin
           
           - task: CopyFiles@2
             displayName: 'copy .jar file'
