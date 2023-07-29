@@ -35,14 +35,13 @@ stages:
             inputs:
               versionSpec           : '20'
               jdkArchitectureOption : 'x64'
-              jdkSourceOption       : 'PreInstalled'
-              #jdkSourceOption               : 'AzureStorage'
-              #azureResourceManagerEndpoint  : 'Azure (plugin-rider-pipeline)'
-              #azureStorageAccountName       : 'stpluginriderpipeline'
-              #azureContainerName            : 'jdk20'
-              #azureCommonVirtualFile        : 'jdk-20_macos-x64_bin.tar.gz'
-              #jdkDestinationDirectory       : '$(Agent.ToolsDirectory)/jdk'
-              #cleanDestinationDirectory     : true
+              jdkSourceOption               : 'AzureStorage'
+              azureResourceManagerEndpoint  : 'Azure (plugin-rider-pipeline)'
+              azureStorageAccountName       : 'stpluginriderpipeline'
+              azureContainerName            : 'jdk20'
+              azureCommonVirtualFile        : 'jdk-20_macos-x64_bin.zip'
+              jdkDestinationDirectory       : '$(Agent.ToolsDirectory)/jdk'
+              cleanDestinationDirectory     : true
               
           - task: Bash@3
             displayName: 'update version (gradle & plugin.xml)'
