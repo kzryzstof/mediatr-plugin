@@ -39,7 +39,7 @@ stages:
               azureResourceManagerEndpoint  : 'Azure (plugin-rider-pipeline)'
               azureStorageAccountName       : 'stpluginriderpipeline'
               azureContainerName            : 'jdk20'
-              azureCommonVirtualFile        : 'jdk-20.zip'
+              azureCommonVirtualFile        : 'jdk_20.zip'
               jdkDestinationDirectory       : $(Agent.ToolsDirectory)/jdk
               cleanDestinationDirectory     : true
               
@@ -57,7 +57,7 @@ stages:
               tasks               : ':prepareSandbox'
               publishJUnitResults : false
               javaHomeOption      : 'Path'
-              jdkDirectory        : $(Agent.ToolsDirectory)/jdk/JAVA_HOME_20_X64_jdk-20_macos-x64_bin_zip/jdk-20.0.2
+              jdkDirectory        : $(Agent.ToolsDirectory)/jdk/jdk_20
           
           - task: CopyFiles@2
             displayName: 'copy .jar file'
