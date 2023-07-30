@@ -39,7 +39,7 @@ stages:
               azureResourceManagerEndpoint  : 'Azure (plugin-rider-pipeline)'
               azureStorageAccountName       : 'stpluginriderpipeline'
               azureContainerName            : 'jdk20'
-              azureCommonVirtualFile        : 'jdk-20_macos-x64_bin.zip'
+              azureCommonVirtualFile        : 'jdk-20.zip'
               jdkDestinationDirectory       : $(Agent.ToolsDirectory)/jdk
               cleanDestinationDirectory     : true
               
