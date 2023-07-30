@@ -57,6 +57,7 @@ stages:
               tasks               : ':prepareSandbox'
               publishJUnitResults : false
               jdkVersionOption    : 1.20
+              javaHomeOption      : 'Path'
               jdkDirectory        : $(Agent.ToolsDirectory)/jdk/bin
           
           - task: CopyFiles@2
