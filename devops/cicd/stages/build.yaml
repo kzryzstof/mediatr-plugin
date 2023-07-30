@@ -58,7 +58,7 @@ stages:
               publishJUnitResults : false
               jdkVersionOption    : 1.20
               javaHomeOption      : 'Path'
-              jdkDirectory        : $(Agent.ToolsDirectory)/jdk
+              jdkDirectory        : $(Agent.ToolsDirectory)/jdk/JAVA_HOME_20_X64_jdk-20_macos-x64_bin_zip/jdk-20.0.2
           
           - task: CopyFiles@2
             displayName: 'copy .jar file'
