@@ -11,11 +11,10 @@ trigger:
       - '*'
 
 variables:
-  - name: poolName
-    #value: 'Azure Pipelines'
-    value: 'On-premise Pool'
-  - name: vmImageName
-    value: 'macos-latest'
+  - name  : poolName
+    value : 'Azure Pipelines'
+  - name  : vmImageName
+    value : 'macos-latest'
 
 stages:
   - template: 'stages/build.yaml'
