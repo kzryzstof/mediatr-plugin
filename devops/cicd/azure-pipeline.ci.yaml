@@ -12,7 +12,8 @@ trigger:
 
 variables:
   - name: poolName
-    value: 'Azure Pipelines'
+    #value: 'Azure Pipelines'
+    value: 'On-premise Pool'
   - name: vmImageName
     value: 'macos-latest'
 
