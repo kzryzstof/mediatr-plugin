@@ -58,7 +58,7 @@ stages:
               publishJUnitResults : false
               jdkVersionOption    : 1.20
               javaHomeOption      : 'Path'
-              jdkDirectory        : $(Agent.ToolsDirectory)/jdk/bin
+              jdkDirectory        : $(Agent.ToolsDirectory)/jdk
           
           - task: CopyFiles@2
             displayName: 'copy .jar file'
