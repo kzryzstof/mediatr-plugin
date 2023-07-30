@@ -57,7 +57,7 @@ stages:
               tasks               : ':prepareSandbox'
               publishJUnitResults : false
               javaHomeOption      : 'Path'
-              jdkDirectory        : $(Agent.ToolsDirectory)/jdk/jdk_20
+              jdkDirectory        : $(Agent.ToolsDirectory)/jdk/JAVA_HOME_20_X64_jdk_20_zip
           
           - task: CopyFiles@2
             displayName: 'copy .jar file'
