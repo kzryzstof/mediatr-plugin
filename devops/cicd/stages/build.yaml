@@ -7,8 +7,6 @@ parameters:
     type: string
   - name: vmImage
     type: string
-  - name: EnforceBranchControlPolicy
-    type: boolean
 
 stages:
   - stage: '${{ parameters.name }}'
@@ -32,45 +30,58 @@ stages:
             displayName: 'install .net 6.0 SDK'
             inputs:
               version: 6.x
-
+  
+          - task: JavaToolInstaller@0
+            inputs:
+              versionSpec           : '20'
+              jdkArchitectureOption : 'x64'
+              jdkSourceOption               : 'AzureStorage'
+              azureResourceManagerEndpoint  : 'Azure (plugin-rider-pipeline)'
+              azureStorageAccountName       : 'stpluginriderpipeline'
+              azureContainerName            : 'jdk20'
+              azureCommonVirtualFile        : 'jdk_20.zip'
+              jdkDestinationDirectory       : $(Agent.ToolsDirectory)/jdk
+              cleanDestinationDirectory     : true
+              
           - task: Bash@3
             displayName: 'update version (gradle & plugin.xml)'
             inputs:
-              targetType: filePath
-              filePath: './update-version.sh'
-              arguments: '$(Build.BuildNumber)'
+              targetType  : filePath
+              filePath     : './update-version.sh'
+              arguments   : '$(Build.BuildNumber)'
             
           - task: Gradle@3
             displayName: 'gradlew :prepareSandbox'
             inputs:
-              options: '-PPluginVersion=$(Build.BuildNumber)'
-              tasks: ':prepareSandbox'
-              publishJUnitResults: false
-              jdkVersionOption: 1.17
+              options             : '-PPluginVersion=$(Build.BuildNumber)'
+              tasks               : ':prepareSandbox'
+              publishJUnitResults : false
+              javaHomeOption      : 'Path'
+              jdkDirectory        : $(Agent.ToolsDirectory)/jdk/JAVA_HOME_20_X64_jdk_20_zip
           
           - task: CopyFiles@2
             displayName: 'copy .jar file'
             inputs:
-              SourceFolder: '$(Build.SourcesDirectory)'
-              Contents: 'build/libs/mediatr-$(Build.BuildNumber).jar'
-              TargetFolder: '$(Build.ArtifactStagingDirectory)/rider/mediatr/lib'
-              flattenFolders: true
+              SourceFolder  : '$(Build.SourcesDirectory)'
+              Contents      : 'build/libs/mediatr-$(Build.BuildNumber).jar'
+              TargetFolder  : '$(Build.ArtifactStagingDirectory)/rider/mediatr/lib'
+              flattenFolders : true
           
           - task: CopyFiles@2
             displayName: 'copy plugin.xml file'
             inputs:
-              SourceFolder: '$(Build.SourcesDirectory)'
-              Contents: 'build/resources/main/META-INF/plugin.xml'
-              TargetFolder: '$(Build.ArtifactStagingDirectory)/rider/mediatr/META-INF'
-              flattenFolders: true
+              SourceFolder  : '$(Build.SourcesDirectory)'
+              Contents      : 'build/resources/main/META-INF/plugin.xml'
+              TargetFolder  : '$(Build.ArtifactStagingDirectory)/rider/mediatr/META-INF'
+              flattenFolders : true
 
           - task: CopyFiles@2
             displayName: 'copy pluginIcon.xml'
             inputs:
-              SourceFolder: '$(Build.SourcesDirectory)'
-              Contents: pluginIcon.svg
-              TargetFolder: '$(Build.ArtifactStagingDirectory)/rider/mediatr/META-INF'
-              flattenFolders: true
+              SourceFolder  : '$(Build.SourcesDirectory)'
+              Contents      : pluginIcon.svg
+              TargetFolder  : '$(Build.ArtifactStagingDirectory)/rider/mediatr/META-INF'
+              flattenFolders : true
               
           - task: CopyFiles@2
             displayName: 'copy dotnet file'
@@ -86,35 +97,35 @@ stages:
           - task: ArchiveFiles@2
             displayName: 'archive rider plugin'
             inputs:
-              rootFolderOrFile: '$(Build.ArtifactStagingDirectory)/rider/mediatr'
-              archiveFile: '$(Build.ArtifactStagingDirectory)/mediatr.$(Build.BuildNumber).zip'
+              rootFolderOrFile  : '$(Build.ArtifactStagingDirectory)/rider/mediatr'
+              archiveFile       : '$(Build.ArtifactStagingDirectory)/mediatr.$(Build.BuildNumber).zip'
           
           - task: PublishBuildArtifacts@1
             displayName: 'publish rider plugin'
             inputs:
-              PathtoPublish: '$(Build.ArtifactStagingDirectory)/mediatr.$(Build.BuildNumber).zip'
-              ArtifactName: 'mediatr.rider.$(Build.BuildNumber)'
+              PathtoPublish : '$(Build.ArtifactStagingDirectory)/mediatr.$(Build.BuildNumber).zip'
+              ArtifactName  : 'mediatr.rider.$(Build.BuildNumber)'
 
           - task: CopyFiles@2
             displayName: 'copy resharper plugin'
             inputs:
-              SourceFolder: '$(Build.SourcesDirectory)/src/dotnet/NoSuchCompany.MediatrPlugin/bin/NoSuchCompany.MediatrPlugin/Debug/'
-              Contents: '*.nupkg'
-              TargetFolder: '$(Build.ArtifactStagingDirectory)/resharper'
-              CleanTargetFolder: true
-              flattenFolders: true
+              SourceFolder      : '$(Build.SourcesDirectory)/src/dotnet/NoSuchCompany.MediatrPlugin/bin/NoSuchCompany.MediatrPlugin/Debug/'
+              Contents          : '*.nupkg'
+              TargetFolder      : '$(Build.ArtifactStagingDirectory)/resharper'
+              CleanTargetFolder : true
+              flattenFolders     : true
             
           - task: PublishBuildArtifacts@1
             displayName: 'publish resharper copy'
             inputs:
-              PathtoPublish: '$(Build.ArtifactStagingDirectory)/resharper'
-              ArtifactName: 'mediatr.resharper.$(Build.BuildNumber)'
+              PathtoPublish : '$(Build.ArtifactStagingDirectory)/resharper'
+              ArtifactName  : 'mediatr.resharper.$(Build.BuildNumber)'
             
           - task: NuGetCommand@2
-            displayName: 'NuGet push'
+            displayName : 'NuGet push'
+            enabled     : false
             inputs:
-              command: push
-              packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'
-              nuGetFeedType: external
+              command               : push
+              packagesToPush        : '$(Build.ArtifactStagingDirectory)/*.nupkg'
+              nuGetFeedType         : external
               publishFeedCredentials: ${{ variables.jetbrainsNugetName }}
-            enabled: false
