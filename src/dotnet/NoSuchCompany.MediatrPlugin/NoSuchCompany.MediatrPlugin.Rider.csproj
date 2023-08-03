@@ -20,6 +20,7 @@
     <PackageReference Include="JetBrains.Rider.SDK" Version="$(SdkVersion)" />
   </ItemGroup>
 
+
   <!-- TODO: uncomment for xaml icons -->
   <!--<ItemGroup>-->
     <!--<Reference Include="System.Xaml" />-->
