@@ -1,11 +1,3 @@
-// ==========================================================================
-// Copyright (C) 2021 by NoSuch Company.
-// All rights reserved.
-// May be used only in accordance with a valid Source Code License Agreement.
-// 
-// Last change: 27/12/2021 @ 20:16
-// ==========================================================================
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -147,6 +139,7 @@ namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR.Services
                     .SelectMany(classDeclaration => classDeclaration.InheritedTypeUsagesEnumerable)
                     .Cast<IUserTypeUsage>()
                     .Select(userTypeUsage => userTypeUsage.ScalarTypeName)
+                    .Where(scalarTypeName => scalarTypeName.TypeArgumentList is not null)
                     .Select(scalarTypeName => scalarTypeName.TypeArgumentList)
                     .Select(typeArgumentList => typeArgumentList.Children())
                     .SelectMany(treeNode => treeNode)
