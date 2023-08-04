@@ -2,7 +2,7 @@
 All notable changes to this project will be documented in this file.
 
 ## 23.08.04XX
-- Bug fix: Lower JVM requirements.
+- Bug fixes.
 
 ## 23.07.29XX
 - Great contribution from [rolandcheck](https://github.com/rolandcheck): New contextual action to automatically create a mediatR handler for a given request.
