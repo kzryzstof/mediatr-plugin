@@ -39,7 +39,7 @@ stages:
               azureResourceManagerEndpoint  : 'Azure (plugin-rider-pipeline)'
               azureStorageAccountName       : 'stpluginriderpipeline'
               azureContainerName            : 'jdk17'
-              azureCommonVirtualFile        : 'jdk_17.zip'
+              azureCommonVirtualFile        : 'jdk17.zip'
               jdkDestinationDirectory       : $(Agent.ToolsDirectory)/jdk
               cleanDestinationDirectory     : true
               
