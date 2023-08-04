@@ -33,13 +33,13 @@ stages:
   
           - task: JavaToolInstaller@0
             inputs:
-              versionSpec           : '20'
-              jdkArchitectureOption : 'x64'
+              versionSpec                   : '17'
+              jdkArchitectureOption         : 'x64'
               jdkSourceOption               : 'AzureStorage'
               azureResourceManagerEndpoint  : 'Azure (plugin-rider-pipeline)'
               azureStorageAccountName       : 'stpluginriderpipeline'
-              azureContainerName            : 'jdk20'
-              azureCommonVirtualFile        : 'jdk_20.zip'
+              azureContainerName            : 'jdk17'
+              azureCommonVirtualFile        : 'jdk_17.zip'
               jdkDestinationDirectory       : $(Agent.ToolsDirectory)/jdk
               cleanDestinationDirectory     : true
               
@@ -57,7 +57,7 @@ stages:
               tasks               : ':prepareSandbox'
               publishJUnitResults : false
               javaHomeOption      : 'Path'
-              jdkDirectory        : $(Agent.ToolsDirectory)/jdk/JAVA_HOME_20_X64_jdk_20_zip
+              jdkDirectory        : $(Agent.ToolsDirectory)/jdk/JAVA_HOME_17_X64_jdk_17_zip
           
           - task: CopyFiles@2
             displayName: 'copy .jar file'
