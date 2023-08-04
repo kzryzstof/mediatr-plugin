@@ -40,6 +40,10 @@ compileKotlin {
     kotlinOptions { jvmTarget = "17" }
 }
 
+compileJava {
+    targetCompatibility = "17"
+}
+
 task setBuildTool {
     doLast {
         ext.args = []
