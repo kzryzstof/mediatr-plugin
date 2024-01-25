@@ -12,12 +12,14 @@ trigger:
 
 parameters:
   - name        : poolName
+    displayName : Pool
     type        : string
     default     : 'On-premise Pool'
     values      :
       - 'Azure Pipelines'
       - 'On-premise Pool'
   - name        : vmImageName
+    displayName : VM
     type        : string
     default     : 'macos-latest'
     values      :
