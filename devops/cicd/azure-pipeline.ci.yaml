@@ -10,16 +10,25 @@ trigger:
     include:
       - '*'
 
-variables:
-  - name  : poolName
-    value : 'Azure Pipelines'
-  - name  : vmImageName
-    value : 'macos-latest'
+parameters:
+  - name        : poolName
+    displayName : Pool
+    type        : string
+    default     : 'On-premise Pool'
+    values      :
+      - 'Azure Pipelines'
+      - 'On-premise Pool'
+  - name        : vmImageName
+    displayName : VM
+    type        : string
+    default     : 'macos-latest'
+    values      :
+      - 'macos-latest'
 
 stages:
   - template: 'stages/build.yaml'
     parameters:
       name      : Build
-      poolName  : $(poolName)
-      vmImage   : $(vmImageName)
+      poolName  : ${{ parameters.poolName }}
+      vmImage   : ${{ parameters.vmImageName }}
       pipelineEnvironmentVariables  : '../environment_variables/build.yaml'    

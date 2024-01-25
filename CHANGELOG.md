@@ -10,6 +10,15 @@ All notable changes to this project will be documented in this file.
 ## 23.07.29XX
 - Great contribution from [rolandcheck](https://github.com/rolandcheck): New contextual action to automatically create a mediatR handler for a given request.
 
+## 23.07.29XX
+- Contribution from [rolandcheck](https://github.com/rolandcheck): New contextual action to automatically create a mediatR handler for a given request.
+
+## 23.07.29XX
+- Contribution from [rolandcheck](https://github.com/rolandcheck): New contextual action to automatically create a mediatR handler for a given request.
+
+## 23.07.29XX
+- Contribution from [rolandcheck](https://github.com/rolandcheck): New contextual action to automatically create a mediatR handler for a given request.
+
 ## 23.02.20XX
 - Support for 2023.1
 
