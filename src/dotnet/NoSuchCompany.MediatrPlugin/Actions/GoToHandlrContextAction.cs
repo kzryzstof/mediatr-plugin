@@ -16,7 +16,6 @@ namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR.Actions
     (
         Name = "Go to HandlR",
         Description = "Looks for the MediatR handler matching the selected request",
-        Group = "C#",
         Disabled = false,
         Priority = 1
     )]
