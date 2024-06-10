@@ -14,7 +14,7 @@ using NoSuchCompany.ReSharperPlugin.FindMyHandlR.Services;
 
 namespace NoSuchCompany.ReSharper.MediatrPlugin.Actions
 {
-	[ActionWithPsiContext("GoToHandlrAction", "Go to HandlR", Kind = CompilationContextKind.Global, IdeaShortcuts = new [] {"Shift+F10"}, VsShortcuts = new [] {"Shift+F10"})]
+	[ActionWithPsiContext(typeof(GoToHandlrAction), "Go to HandlR", Kind = CompilationContextKind.Global, IdeaShortcuts = new [] {"Shift+F10"}, VsShortcuts = new [] {"Shift+F10"})]
 	public class GoToHandlrAction : IActionWithExecuteRequirement, IExecutableAction, IInsertLast<NavigateMenu>
 	{
 		private readonly IHandlrNavigator _handlrNavigator;
