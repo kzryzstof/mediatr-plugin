@@ -61,7 +61,7 @@ namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR.Services
 
 		private (bool nodeFound, ITreeNode? treeNode) FindTreeNode(ITypeElement typeElement, ICSharpFile csharpFile)
 		{
-			ITreeNode? treeNode = csharpFile.GetTreeNode(typeElement.GetFullname());
+			ITreeNode? treeNode = csharpFile.GetTreeNode(typeElement.GetClrName().FullName);
 
 			if (treeNode is null)
 				Logger.Instance.Log(LoggingLevel.WARN, $"The tree node for the type '{typeElement.ShortName}' could not be found in the file '{csharpFile.GetSourceFile()!.DisplayName}'.");

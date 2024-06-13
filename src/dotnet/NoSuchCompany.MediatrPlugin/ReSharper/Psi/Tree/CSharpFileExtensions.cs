@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using JetBrains.ReSharper.Psi.CSharp.Tree;
 using JetBrains.ReSharper.Psi.Tree;
@@ -12,37 +13,42 @@ namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR.ReSharper.Psi.Tree
         {
             Guard.ThrowIfIsNull(typeName, nameof(typeName));
 
-            var namespaceName = GetLongNameFromFullyQualifiedName(typeName);
-            var shortName = GetShortNameFromFullyQualifiedName(typeName);
+            IReadOnlyList<ICSharpNamespaceDeclaration> namespaceDeclarations = file
+                .NamespaceDeclarationsEnumerable
+                .Where(fileNamespace => typeName.StartsWith(fileNamespace.DeclaredName))
+                .ToList();
 
-            TreeNodeEnumerable<ICSharpNamespaceDeclaration> namespaceDeclarations = file.NamespaceDeclarationsEnumerable;
+            foreach (ICSharpNamespaceDeclaration? namespaceDeclaration in namespaceDeclarations)
+            {
+                ITreeNode? foundTreeNode = SearchTreeNode
+                (
+                    namespaceDeclaration.TypeDeclarationsEnumerable,
+                    typeName
+                );
 
-            var namespaceDeclaration = (from declaration in namespaceDeclarations
-                where declaration.DeclaredName == namespaceName
-                select declaration).FirstOrDefault();
+                if (foundTreeNode is not null)
+                    return foundTreeNode;
+            }
 
-            if (namespaceDeclaration is null)
-                return null;
+            return null;
+        }
+        
+        private static ITreeNode? SearchTreeNode(IEnumerable<ITypeDeclaration> typeDeclarations, string searchedTypeName)
+        {
+            foreach (ITypeDeclaration typeDeclaration in typeDeclarations)
+            {
+                if (IsSearchedType(typeDeclaration, searchedTypeName))
+                    return typeDeclaration;
 
-            TreeNodeEnumerable<ICSharpTypeDeclaration> typeDeclaration = namespaceDeclaration.TypeDeclarationsEnumerable;
+                return SearchTreeNode(typeDeclaration.TypeDeclarationsEnumerable, searchedTypeName);
+            }
 
-            var resultList = (from node in typeDeclaration
-                where node.DeclaredName == shortName
-                select node).ToList();
-
-            return resultList.FirstOrDefault();
+            return null;
         }
 
-        private static string GetLongNameFromFullyQualifiedName(string fullQualifiedName)
+        private static bool IsSearchedType(ITypeDeclaration typeDeclaration, string typeName)
         {
-            var pos = fullQualifiedName.LastIndexOf(".", StringComparison.Ordinal) + 1;
-            return pos > 0 ? fullQualifiedName[..(pos - 1)] : fullQualifiedName;
-        }
-
-        private static string GetShortNameFromFullyQualifiedName(string fullyQualifiedName)
-        {
-            var pos = fullyQualifiedName.LastIndexOf(".", StringComparison.Ordinal) + 1;
-            return pos > 0 ? fullyQualifiedName[pos..] : fullyQualifiedName;
+            return string.Equals(typeDeclaration.CLRName, typeName, StringComparison.CurrentCultureIgnoreCase);
         }
     }
 }
