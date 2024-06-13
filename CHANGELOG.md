@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## 24.06.12XX
+- Fix issue #57: adds support for nested handler classes.
+
 ## 24.06.11XX
 - Support for 2024.2
 
