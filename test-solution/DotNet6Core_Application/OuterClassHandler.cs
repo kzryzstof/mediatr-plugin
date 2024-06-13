@@ -3,13 +3,16 @@ using MediatR;
 
 namespace DotNet6Core_Application;
 
-public class OuterClassHandler
+public class OutestClassHandler
 {
-    public class InnerClassHandler : IRequestHandler<InnerClassRequest>
+    public class OuterClassHandler
     {
-        public Task<Unit> Handle(InnerClassRequest request, CancellationToken cancellationToken)
+        public class InnerClassHandler : IRequestHandler<InnerClassRequest>
         {
-            throw new NotImplementedException();
+            public Task<Unit> Handle(InnerClassRequest request, CancellationToken cancellationToken)
+            {
+                throw new NotImplementedException();
+            }
         }
-    }   
+    }
 }
