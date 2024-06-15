@@ -9,7 +9,7 @@ public class OutestClassHandler
     {
         public class InnerClassHandler : IRequestHandler<InnerClassRequest>
         {
-            public Task<Unit> Handle(InnerClassRequest request, CancellationToken cancellationToken)
+            public Task Handle(InnerClassRequest request, CancellationToken cancellationToken)
             {
                 throw new NotImplementedException();
             }
