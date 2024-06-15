@@ -17,9 +17,9 @@
            text="MediatR extensions" 
            popup="true">
       <add-to-group group-id="GoToMenu" />
-      <action id="GoToHandlrAction"
+      <action id="NoSuchCompany.ReSharper.MediatrPlugin.Actions.GoToHandlrAction"
               class="ca.nosuchcompany.rider.plugins.mediatr.GoToHandlrAction">
-        <keyboard-shortcut keymap="$default" first-keystroke="control alt F11" replace-all="true" />
+        <keyboard-shortcut keymap="$default" first-keystroke="alt H" replace-all="true" />
       </action>
     </group>
   </actions>
