@@ -63,14 +63,14 @@ public class HandlrCreator : IHandlrCreator
 
     private (string classFormat, string methodFormat) GetFormats(bool isQuery)
     {
-        // todo: extract this somewhere
-        const string queryHandlerFormat = @"class $0 : $1<$2, $3> {}";
-        const string queryStubHandleMethodFormat = @"Task<$0> Handle($1 request, CancellationToken cancellationToken) {throw new NotImplementedException();}";
+        //  TODO: extract this somewhere
+        const string QueryHandlerFormat = @"class $0 : $1<$2, $3> {}";
+        const string QueryStubHandleMethodFormat = @"Task<$0> Handle($1 request, CancellationToken cancellationToken) {throw new NotImplementedException();}";
 
-        const string commandHandlerFormat = @"class $0 : $1<$2> {}";
-        const string commandStubHandleMethodFormat = @"public Task Handle($1 request, CancellationToken cancellationToken) {throw new NotImplementedException();}";
+        const string CommandHandlerFormat = @"class $0 : $1<$2> {}";
+        const string CommandStubHandleMethodFormat = @"public Task Handle($1 request, CancellationToken cancellationToken) {throw new NotImplementedException();}";
 
-        return isQuery ? (queryHandlerFormat, queryStubHandleMethodFormat) : (commandHandlerFormat, commandStubHandleMethodFormat);
+        return isQuery ? (classFormat: QueryHandlerFormat, methodFormat: QueryStubHandleMethodFormat) : (classFormat: CommandHandlerFormat, methodFormat: CommandStubHandleMethodFormat);
     }
 
     private static IType? GetMediatrQueryReturnType(ITypeElement requestType)
