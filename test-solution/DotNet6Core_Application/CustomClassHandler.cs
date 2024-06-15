@@ -5,7 +5,7 @@ namespace DotNet6Core_Application;
 
 public class CustomClassHandler : IRequestHandler<CustomClassRequest>
 {
-    public Task<Unit> Handle(CustomClassRequest classRequest, CancellationToken cancellationToken)
+    public Task Handle(CustomClassRequest classRequest, CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
     }

@@ -10,6 +10,6 @@ namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR.Services
 
         bool IsRequest(IIdentifier identifier);
         
-        IClassLikeDeclaration CreateHandlrFor(IClassLikeDeclaration requestTypeDeclaration);
+        IClassLikeDeclaration CreateHandlrFor(IIdentifier identifier);
     }
 }

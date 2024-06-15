@@ -14,92 +14,106 @@ using NoSuchCompany.ReSharperPlugin.FindMyHandlR.Diagnostics;
 using NoSuchCompany.ReSharperPlugin.FindMyHandlR.ReSharper.Psi.Tree;
 using NoSuchCompany.ReSharperPlugin.FindMyHandlR.Services;
 
-namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR.Actions;
-
-[ContextAction(
-    Name = "Create HandlR",
-    Description = "Creates MediatR handler matching the selected request",
-    Group = "C#",
-    Disabled = false,
-    Priority = 2
-)]
-public sealed class CreateHandlrContextAction : ContextActionBase
+namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR.Actions
 {
-    private readonly IMediatR _mediatR;
-
-    private readonly IIdentifier _mediatrRequestIdentifier;
-    private readonly LanguageIndependentContextActionDataProvider _dataProvider;
-
-    public override string Text => "Create HandlR";
-
-    internal CreateHandlrContextAction(
-        LanguageIndependentContextActionDataProvider dataProvider,
-        IMediatR mediatR)
+    [ContextAction
+    (
+        Name = "Create HandlR",
+        Description = "Creates MediatR handler matching the selected request",
+        Group = "C#",
+        Disabled = false,
+        Priority = 2
+    )]
+    public sealed class CreateHandlrContextAction : ContextActionBase
     {
-        Guard.ThrowIfIsNull(dataProvider, nameof(dataProvider));
-        Guard.ThrowIfIsNull(mediatR, nameof(mediatR));
+        private readonly LanguageIndependentContextActionDataProvider _dataProvider;
+        private readonly IMediatR _mediatR;
 
-        Logger.Instance.Log(LoggingLevel.WARN, "Ctor called.");
+        private readonly IIdentifier _mediatrRequestIdentifier;
 
-        _mediatR = mediatR;
-        _dataProvider = dataProvider;
-        _mediatrRequestIdentifier = GetSelectedMediatrRequest(dataProvider);
-    }
+        public override string Text => "Create HandlR";
 
-    public CreateHandlrContextAction(LanguageIndependentContextActionDataProvider dataProvider)
-        : this(dataProvider, new MediatR())
-    {
-    }
-
-    /// <summary>
-    /// Finds out whether the selected type implements MediatR's 'IBaseRequest'.
-    /// </summary>
-    /// <param name="_"></param>
-    /// <returns></returns>
-    public override bool IsAvailable(IUserDataHolder _)
-    {
-        Logger.Instance.Log(LoggingLevel.WARN, "IsAvailable");
-
-        return _mediatrRequestIdentifier is not NullIdentifier;
-    }
-
-    protected override Action<ITextControl> ExecutePsiTransaction(ISolution solution, IProgressIndicator progress)
-    {
-        var requestTypeDeclaration = _dataProvider.GetSelectedElement<IClassLikeDeclaration>().NotNull();
-
-        var classDeclaration = _mediatR.CreateHandlrFor(requestTypeDeclaration);
-
-        using (WriteLockCookie.Create())
+        internal CreateHandlrContextAction
+        (
+            LanguageIndependentContextActionDataProvider dataProvider,
+            IMediatR mediatR
+        )
         {
-            // todo: provide some customization where handler class should be placed at
-            var handlerTypeDeclarationNode = ModificationUtil.AddChildAfter(requestTypeDeclaration, classDeclaration);
+            Guard.ThrowIfIsNull(dataProvider, nameof(dataProvider));
+            Guard.ThrowIfIsNull(mediatR, nameof(mediatR));
 
-            return textControl =>
+            Logger.Instance.Log(LoggingLevel.VERBOSE, "Ctor called.");
+
+            _mediatR = mediatR;
+            _dataProvider = dataProvider;
+            _mediatrRequestIdentifier = GetSelectedMediatrRequest(dataProvider);
+        }
+
+        public CreateHandlrContextAction(LanguageIndependentContextActionDataProvider dataProvider)
+            : this(dataProvider, new MediatR())
+        {
+        }
+
+        /// <summary>
+        /// Finds out whether the selected type implements MediatR's 'IBaseRequest'.
+        /// </summary>
+        /// <param name="_"></param>
+        /// <returns></returns>
+        public override bool IsAvailable(IUserDataHolder _)
+        {
+            Logger.Instance.Log(LoggingLevel.VERBOSE, "IsAvailable");
+
+            return _mediatrRequestIdentifier is not NullIdentifier;
+        }
+
+        protected override Action<ITextControl> ExecutePsiTransaction
+        (
+            ISolution solution,
+            IProgressIndicator progress
+        )
+        {
+            if (_dataProvider.GetSelectedTreeNode<ITreeNode>() is not IIdentifier selectedIdentifier)
+                return null;
+            
+            IClassLikeDeclaration requestTypeDeclaration = _dataProvider.GetSelectedElement<IClassLikeDeclaration>().NotNull();
+
+            IClassLikeDeclaration classDeclaration = _mediatR.CreateHandlrFor(selectedIdentifier);
+
+            using (WriteLockCookie.Create())
             {
-                // todo: add customization here as well
-                var methodDeclaration = handlerTypeDeclarationNode.MethodDeclarations.First();
-                var statement = methodDeclaration.Body.Statements.FirstOrDefault(); // select 'not implemented' part
-                var range = statement?.GetDocumentRange() ?? DocumentRange.InvalidRange;
-                textControl.Selection.SetRange(range);
-            };
-        }
-    }
+                // todo: provide some customization where handler class should be placed at
+                IClassLikeDeclaration handlerTypeDeclarationNode = ModificationUtil.AddChildAfter(requestTypeDeclaration, classDeclaration);
 
-    private IIdentifier GetSelectedMediatrRequest(IContextActionDataProvider dataProvider)
-    {
-        if (dataProvider.GetSelectedElement<ITreeNode>() is not IIdentifier someIdentifier)
+                return textControl =>
+                {
+                    // todo: add customization here as well
+                    IMethodDeclaration? methodDeclaration = handlerTypeDeclarationNode.MethodDeclarations.First();
+                    ICSharpStatement? statement = methodDeclaration.Body.Statements.FirstOrDefault(); // select 'not implemented' part
+                    DocumentRange range = statement?.GetDocumentRange() ?? DocumentRange.InvalidRange;
+                    textControl.Selection.SetRange(range);
+                };
+            }
+        }
+
+        private IIdentifier GetSelectedMediatrRequest(IContextActionDataProvider dataProvider)
         {
-            Logger.Instance.Log(LoggingLevel.VERBOSE,
-                $"The selected tree node is not an instance of {nameof(IIdentifier)}.");
-            return new NullIdentifier(dataProvider.PsiModule);
-        }
+            if (dataProvider.GetSelectedElement<ITreeNode>() is not IIdentifier someIdentifier)
+            {
+                Logger.Instance.Log
+                (
+                    LoggingLevel.VERBOSE,
+                    $"The selected tree node is not an instance of {nameof(IIdentifier)}."
+                );
+                return new NullIdentifier(dataProvider.PsiModule);
+            }
 
-        if (!_mediatR.IsRequest(someIdentifier))
-        {
-            Logger.Instance.Log(LoggingLevel.VERBOSE, "The selected tree node is not mediatR request.");
-            return new NullIdentifier(dataProvider.PsiModule);
-        }
+            if (!_mediatR.IsRequest(someIdentifier))
+            {
+                Logger.Instance.Log(LoggingLevel.VERBOSE, "The selected tree node is not mediatR request.");
+                return new NullIdentifier(dataProvider.PsiModule);
+            }
 
-        return someIdentifier;
+            return someIdentifier;
+        }
     }
 }

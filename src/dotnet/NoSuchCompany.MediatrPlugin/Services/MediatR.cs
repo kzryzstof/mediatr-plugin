@@ -65,7 +65,7 @@ namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR.Services
                     .GetPossibleInheritors(resolveResult.DeclaredElement.ShortName)
                 );
 
-            Logger.Instance.Log(LoggingLevel.WARN, $"Possible inheritors found: {string.Join(",", results.Select(i => i.GetClrName().FullName))}");
+            Logger.Instance.Log(LoggingLevel.VERBOSE, $"Possible inheritors found: {string.Join(",", results.Select(i => i.GetClrName().FullName))}");
 
             ITypeElement? inheritorTypeElement = SelectInheritor(results, identifier);
 
@@ -107,9 +107,11 @@ namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR.Services
             return false;
         }
 
-        public IClassLikeDeclaration CreateHandlrFor(IClassLikeDeclaration requestTypeDeclaration) => _handlrCreator.CreateHandlrFor(requestTypeDeclaration);
-
-
+        public IClassLikeDeclaration CreateHandlrFor(IIdentifier identifier)
+        {
+            return _handlrCreator.CreateHandlrFor(identifier);
+        } 
+        
         private ITypeElement? SelectInheritor(IEnumerable<ITypeElement> inheritors, IIdentifier selectedIdentifier)
         {
             IDeclaredType selectedDeclaredType = selectedIdentifier.ToDeclaredType();
