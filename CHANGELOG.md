@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## 24.10.15XX
+- Support for 2024.3
+
 ## 24.06.15XX
 - Fix issue #60: repair shortcuts. Switch default shortcut to `ALT + H`.
 

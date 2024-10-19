@@ -14,7 +14,7 @@ parameters:
   - name        : poolName
     displayName : Pool
     type        : string
-    default     : 'On-premise Pool'
+    default     : 'Azure Pipelines'
     values      :
       - 'Azure Pipelines'
       - 'On-premise Pool'
