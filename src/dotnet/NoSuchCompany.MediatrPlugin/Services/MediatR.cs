@@ -179,7 +179,7 @@ namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR.Services
             else if (declaration is IRecordDeclaration recordDeclaration)
                 typeUsages = recordDeclaration.InheritedTypeUsagesEnumerable;
             else
-                typeUsages = [];
+                typeUsages = new List<ITypeUsage>();
             
             return typeUsages
                 .Where
