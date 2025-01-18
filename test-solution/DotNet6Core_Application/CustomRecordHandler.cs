@@ -3,7 +3,7 @@ using MediatR;
 
 namespace DotNet6Core_Application;
 
-public class CustomRecordHandler : IRequestHandler<CustomRecordRequest>
+public record CustomRecordHandler : IRequestHandler<CustomRecordRequest>
 {
     public Task Handle(CustomRecordRequest recordRequest, CancellationToken cancellationToken)
     {

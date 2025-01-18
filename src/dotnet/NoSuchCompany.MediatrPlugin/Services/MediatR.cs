@@ -137,10 +137,7 @@ namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR.Services
 
                 bool supportRequest = classInheritor
                     .GetDeclarations()
-                    .Cast<IClassDeclaration>()
-                    .SelectMany(classDeclaration => classDeclaration.InheritedTypeUsagesEnumerable)
-                    .Cast<IUserTypeUsage>()
-                    .Select(userTypeUsage => userTypeUsage.ScalarTypeName)
+                    .SelectMany(GetInheritedTypeUsageName)
                     .Where(scalarTypeName => scalarTypeName.TypeArgumentList is not null)
                     .Select(scalarTypeName => scalarTypeName.TypeArgumentList)
                     .Select(typeArgumentList => typeArgumentList.Children())
@@ -168,6 +165,32 @@ namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR.Services
             }
 
             return null;
+        }
+        
+        private static IEnumerable<IReferenceName> GetInheritedTypeUsageName
+        (
+            IDeclaration declaration
+        )
+        {
+            IEnumerable<ITypeUsage> typeUsages;
+            
+            if (declaration is IClassDeclaration classDeclaration)
+                typeUsages = classDeclaration.InheritedTypeUsagesEnumerable;
+            else if (declaration is IRecordDeclaration recordDeclaration)
+                typeUsages = recordDeclaration.InheritedTypeUsagesEnumerable;
+            else
+                typeUsages = [];
+            
+            return typeUsages
+                .Where
+                (
+                    typeUsage => typeUsage is IUserTypeUsage
+                )
+                .Cast<IUserTypeUsage>()
+                .Select
+                (
+                    userTypeUsager => userTypeUsager.ScalarTypeName
+                );
         }
     }
 }
