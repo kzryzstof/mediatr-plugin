@@ -88,7 +88,14 @@ namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR.Actions
             IContextActionDataProvider dataProvider
         )
         {
-            if (dataProvider.GetSelectedElement<ITreeNode>() is not IIdentifier mediatrRequestIdentifier)
+            var selectedElement = dataProvider.GetSelectedElement<ITreeNode>();
+
+            if (selectedElement is null)
+                return new NullIdentifier(dataProvider.PsiModule);
+            
+            IIdentifier? selectedIdentifier = selectedElement is IIdentifier identifier ? identifier : selectedElement.NextSibling is IIdentifier nextSiblingIdentifier ? nextSiblingIdentifier : null;
+            
+            if (selectedIdentifier is null)
             {
                 Logger.Instance.Log
                 (
@@ -99,7 +106,7 @@ namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR.Actions
                 return new NullIdentifier(dataProvider.PsiModule);
             }
 
-            if (!_handlrNavigator.IsRequest(mediatrRequestIdentifier))
+            if (!_handlrNavigator.IsRequest(selectedIdentifier))
             {
                 Logger.Instance.Log
                 (
@@ -110,7 +117,7 @@ namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR.Actions
                 return new NullIdentifier(dataProvider.PsiModule);
             }
 
-            return mediatrRequestIdentifier;
+            return selectedIdentifier;
         }
     }
 }
