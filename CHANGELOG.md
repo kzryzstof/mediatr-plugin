@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## 25.03.16XX
+- Support for 2025.1
+
 ## 25.01.18XX
 - Happy new year!
 - Fix issue #68: support added for `record` IRequestHandler
