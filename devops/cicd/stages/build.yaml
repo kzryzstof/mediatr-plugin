@@ -89,7 +89,7 @@ stages:
             inputs:
               SourceFolder: '$(Build.SourcesDirectory)'
               Contents: |
-                src/dotnet/NoSuchCompany.MediatrPlugin/bin/NoSuchCompany.MediatrPlugin.Rider/Debug/NoSuchCompany.MediatrPlugin.dll
+                src/dotnet/MediatorPlugin/bin/MediatorPlugin.Rider/Debug/MediatorPlugin.dll
               TargetFolder: '$(Build.ArtifactStagingDirectory)/rider/mediatr/dotnet'
               flattenFolders: true
                   
@@ -108,7 +108,7 @@ stages:
           - task: CopyFiles@2
             displayName: 'copy resharper plugin'
             inputs:
-              SourceFolder      : '$(Build.SourcesDirectory)/src/dotnet/NoSuchCompany.MediatrPlugin/bin/NoSuchCompany.MediatrPlugin/Debug/'
+              SourceFolder      : '$(Build.SourcesDirectory)/src/dotnet/MediatorPlugin/bin/MediatorPlugin/Debug/'
               Contents          : '*.nupkg'
               TargetFolder      : '$(Build.ArtifactStagingDirectory)/resharper'
               CleanTargetFolder : true
