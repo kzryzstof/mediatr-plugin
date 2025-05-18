@@ -1,6 +1,6 @@
 <idea-plugin require-restart="true">
   <id>ca.nosuchcompany.rider.plugins.mediatr</id>
-  <name>MediatR Extensions</name>
+  <name>Mediator Extensions</name>
   <version>_PLACEHOLDER_</version>
   <vendor url="https://github.com/kzryzstof/mediatr-plugin">NoSuch Company</vendor>
   <idea-version since-build="_PLACEHOLDER_" until-build="_PLACEHOLDER_" />

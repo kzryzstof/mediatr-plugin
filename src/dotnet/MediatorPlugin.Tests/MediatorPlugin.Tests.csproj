@@ -4,7 +4,7 @@
         <TargetFramework>net472</TargetFramework>
         <IsPackable>false</IsPackable>
         <LangVersion>latest</LangVersion>
-        <RootNamespace>NoSuchCompany.MediatrPlugin.Tests</RootNamespace>
+        <RootNamespace>MediatorPlugin.Tests</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
