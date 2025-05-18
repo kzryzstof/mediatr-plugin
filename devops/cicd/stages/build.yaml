@@ -37,7 +37,7 @@ stages:
               jdkArchitectureOption         : 'x64'
               jdkSourceOption               : 'AzureStorage'
               azureResourceManagerEndpoint  : 'Azure (plugin-rider-pipeline)'
-              azureStorageAccountName       : 'stpluginriderpipeline'
+              azureStorageAccountName       : 'stpluginrider'
               azureContainerName            : 'jdk17'
               azureCommonVirtualFile        : 'jdk17.zip'
               jdkDestinationDirectory       : $(Agent.ToolsDirectory)/jdk

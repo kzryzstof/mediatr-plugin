@@ -84,7 +84,7 @@ namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR.Services
 
             if (mediatrModule == null)
             {
-                Logger.Instance.Log(LoggingLevel.VERBOSE, $"> Unable to find a module starting with the name '{MediatrModuleName}'");
+                Logger.Instance.Log(LoggingLevel.VERBOSE, $"> Unable to find a module starting with the name '{ MediatrModuleName}'");
                 return false;
             }
 
