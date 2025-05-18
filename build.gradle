@@ -21,7 +21,7 @@ repositories {
 }
 
 wrapper {
-    gradleVersion = '8.2.1'     //  https://services.gradle.org/distributions/
+    gradleVersion = '8.14.0'     //  https://services.gradle.org/distributions/
     distributionType = Wrapper.DistributionType.ALL
     distributionUrl = "https://cache-redirector.jetbrains.com/services.gradle.org/distributions/gradle-${gradleVersion}-all.zip"
 }

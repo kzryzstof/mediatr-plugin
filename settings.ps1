@@ -1,4 +1,4 @@
-$PluginId = 
+$PluginId = "MediatorPlugin"
 $SolutionPath = "$PSScriptRoot\MediatorPlugin.sln"
 $SourceBasePath = "$PSScriptRoot\src\dotnet"
 
