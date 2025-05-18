@@ -10,8 +10,8 @@
 
   <PropertyGroup>
     <TargetFramework>net472</TargetFramework>
-    <AssemblyName>NoSuchCompany.MediatrPlugin</AssemblyName>
-    <RootNamespace>NoSuchCompany.ReSharper.MediatrPlugin</RootNamespace>
+    <AssemblyName>MediatorPlugin</AssemblyName>
+    <RootNamespace>ReSharper.MediatorPlugin</RootNamespace>
     <IsPackable>false</IsPackable>
     <DefineConstants>$(DefineConstants);RIDER</DefineConstants>
   </PropertyGroup>
