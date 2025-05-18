@@ -32,6 +32,7 @@ stages:
               version: 6.x
   
           - task: JavaToolInstaller@0
+            displayName: 'install java'
             inputs:
               versionSpec                   : '17'
               jdkArchitectureOption         : 'x64'
@@ -89,8 +90,6 @@ stages:
               SourceFolder: '$(Build.SourcesDirectory)'
               Contents: |
                 src/dotnet/NoSuchCompany.MediatrPlugin/bin/NoSuchCompany.MediatrPlugin.Rider/Debug/NoSuchCompany.MediatrPlugin.dll
-              
-              
               TargetFolder: '$(Build.ArtifactStagingDirectory)/rider/mediatr/dotnet'
               flattenFolders: true
                   

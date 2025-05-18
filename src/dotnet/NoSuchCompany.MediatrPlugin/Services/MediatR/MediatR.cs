@@ -19,7 +19,7 @@ using NoSuchCompany.ReSharperPlugin.FindMyHandlR.ReSharper.Psi.Tree;
 
 namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR.Services
 {
-    internal sealed class MediatR : IMediatR
+    internal sealed class MediatR : IMediator
     {
         private readonly IHandlrCreator _handlrCreator;
 

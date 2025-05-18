@@ -27,7 +27,7 @@ namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR.Actions
     public sealed class CreateHandlrContextAction : ContextActionBase
     {
         private readonly LanguageIndependentContextActionDataProvider _dataProvider;
-        private readonly IMediatR _mediatR;
+        private readonly IMediator _mediatR;
 
         private readonly IIdentifier _mediatrRequestIdentifier;
 
@@ -36,7 +36,7 @@ namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR.Actions
         internal CreateHandlrContextAction
         (
             LanguageIndependentContextActionDataProvider dataProvider,
-            IMediatR mediatR
+            IMediator mediatR
         )
         {
             Guard.ThrowIfIsNull(dataProvider, nameof(dataProvider));

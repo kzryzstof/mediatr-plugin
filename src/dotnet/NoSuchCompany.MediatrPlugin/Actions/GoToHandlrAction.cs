@@ -21,13 +21,13 @@ namespace NoSuchCompany.ReSharper.MediatrPlugin.Actions
     )]
     public class GoToHandlrAction : IActionWithExecuteRequirement, IExecutableAction, IInsertLast<NavigateMenu>
     {
-        private readonly IHandlrNavigator _handlrNavigator;
+        private readonly IHandlerNavigator _handlerNavigator;
 
         public GoToHandlrAction()
         {
-            Logger.Instance.Log(LoggingLevel.VERBOSE, $"GoToHandlrAction instance has been created");
+            Logger.Instance.Log(LoggingLevel.VERBOSE, "GoToHandlrAction instance has been created");
 
-            _handlrNavigator = new HandlrNavigator(new MediatR());
+            _handlerNavigator = new HandlerNavigator(new MediatR());
         }
 
         public void Execute
@@ -46,7 +46,7 @@ namespace NoSuchCompany.ReSharper.MediatrPlugin.Actions
                 return;
             }
 
-            _handlrNavigator.Navigate(selectedIdentifier);
+            _handlerNavigator.Navigate(selectedIdentifier);
         }
 
         public IActionRequirement GetRequirement(IDataContext dataContext)
@@ -66,16 +66,19 @@ namespace NoSuchCompany.ReSharper.MediatrPlugin.Actions
             return IsMediatrRequestSelected(context);
         }
 
-        private bool IsMediatrRequestSelected(IDataContext context)
+        private bool IsMediatrRequestSelected
+        (
+            IDataContext context
+        )
         {
             var selectedTreeNode = context.GetSelectedTreeNode<ITreeNode>();
 
-            if (selectedTreeNode is IIdentifier selectedIdentifier && _handlrNavigator.IsRequest(selectedIdentifier))
+            if (selectedTreeNode is IIdentifier selectedIdentifier && _handlerNavigator.IsRequest(selectedIdentifier))
                 return true;
 
             Logger.Instance.Log(LoggingLevel.VERBOSE, "Selected element is not an MediatR request");
+            
             return false;
-
         }
     }
 }

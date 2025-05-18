@@ -4,7 +4,7 @@ using JetBrains.ReSharper.Psi.Tree;
 
 namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR.Services
 {
-    public interface IMediatR
+    public interface IMediator
     {
         ITypeElement? FindHandler(IIdentifier identifier);
 

@@ -2,7 +2,7 @@ using JetBrains.ReSharper.Psi.Tree;
 
 namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR.Services
 {
-    public interface IHandlrNavigator
+    public interface IHandlerNavigator
     {
         bool IsRequest(IIdentifier identifier);
 

@@ -11,7 +11,7 @@ namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR.ReSharper.Psi.Tree
         {
             Guard.ThrowIfIsNull(identifier, nameof(identifier));
 
-            var type = CSharpTypeFactory.CreateType(identifier.Name, identifier);
+            IType type = CSharpTypeFactory.CreateType(identifier.Name, identifier);
 
             return (IDeclaredType) type;
         }

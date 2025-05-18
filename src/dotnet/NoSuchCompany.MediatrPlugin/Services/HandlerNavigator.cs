@@ -10,32 +10,44 @@ using NoSuchCompany.ReSharperPlugin.FindMyHandlR.ReSharper.Psi.Tree;
 
 namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR.Services
 {
-	internal sealed class HandlrNavigator : IHandlrNavigator
+	internal sealed class HandlerNavigator : IHandlerNavigator
 	{
-		private readonly IMediatR _mediatR;
+		private readonly IMediator _mediator;
 
-		public HandlrNavigator(IMediatR mediatR)
+		public HandlerNavigator
+		(
+			IMediator mediator
+		)
 		{
-			Guard.ThrowIfIsNull(mediatR, nameof(mediatR));
+			Guard.ThrowIfIsNull(mediator, nameof(mediator));
 
-			_mediatR = mediatR;
+			_mediator = mediator;
 		}
-
-		public bool IsRequest(IIdentifier identifier)
+		
+		public bool IsRequest
+		(
+			IIdentifier identifier
+		)
 		{
 			Guard.ThrowIfIsNull(identifier, nameof(identifier));
 
-			return _mediatR.IsRequest(identifier);
+			return _mediator.IsRequest(identifier);
 		}
 
-		public void Navigate(IIdentifier request)
+		public void Navigate
+		(
+			IIdentifier request
+		)
 		{
 			Guard.ThrowIfIsNull(request, nameof(request));
 
 			GoToHandler(request);
 		}
 
-		private static (bool fileFound, ICSharpFile? csharpFile) FindCSharpFile(IDeclaredElement typeElement)
+		private static (bool fileFound, ICSharpFile? csharpFile) FindCSharpFile
+		(
+			IDeclaredElement typeElement
+		)
 		{
 			var (fileFound, csharpFile) = typeElement.FindCSharpFile();
 
@@ -47,19 +59,26 @@ namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR.Services
 			return (fileFound, csharpFile);
 		}
 
-		private (bool handlerFound, ITypeElement? typeElement) FindHandler(IIdentifier selectedIdentifier)
+		private (bool handlerFound, ITypeElement? typeElement) FindHandler
+		(
+			IIdentifier selectedIdentifier
+		)
 		{
-			ITypeElement? mediatrHandlerTypeElement = _mediatR.FindHandler(selectedIdentifier);
+			ITypeElement? mediatrHandlerTypeElement = _mediator.FindHandler(selectedIdentifier);
 
 			if (mediatrHandlerTypeElement is null)
-				Logger.Instance.Log(LoggingLevel.WARN, $"No MediatR handler using the type '{selectedIdentifier.Name}' has been found.");
+				Logger.Instance.Log(LoggingLevel.WARN, $"No handler using the type '{selectedIdentifier.Name}' has been found.");
 			else
-				Logger.Instance.Log(LoggingLevel.INFO, $"A MediatR handler using the type '{selectedIdentifier.Name}' has been found: '{mediatrHandlerTypeElement.GetClrName().FullName}'");
+				Logger.Instance.Log(LoggingLevel.INFO, $"A handler using the type '{selectedIdentifier.Name}' has been found: '{mediatrHandlerTypeElement.GetClrName().FullName}'");
 
 			return (mediatrHandlerTypeElement is not null, mediatrHandlerTypeElement);
 		}
-
-		private (bool nodeFound, ITreeNode? treeNode) FindTreeNode(ITypeElement typeElement, ICSharpFile csharpFile)
+		
+		private (bool nodeFound, ITreeNode? treeNode) FindTreeNode
+		(
+			ITypeElement typeElement,
+			ICSharpFile csharpFile
+		)
 		{
 			ITreeNode? treeNode = csharpFile.GetTreeNode(typeElement.GetClrName().FullName);
 
@@ -71,7 +90,10 @@ namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR.Services
 			return (treeNode is not null, treeNode);
 		}
 
-		private void GoToHandler(IIdentifier selectedIdentifier)
+		private void GoToHandler
+		(
+			IIdentifier selectedIdentifier
+		)
 		{
 			try
 			{
@@ -104,7 +126,10 @@ namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR.Services
 			}
 		}
 
-		private static void NavigateToFile(ITreeNode treeNode)
+		private static void NavigateToFile
+		(
+			ITreeNode treeNode
+		)
 		{
 			treeNode.NavigateToTreeNode(true);
 		}

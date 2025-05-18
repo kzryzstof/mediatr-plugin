@@ -23,7 +23,7 @@ namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR.Actions
     )]
     public sealed class GoToHandlrContextAction : ContextActionBase
     {
-        private readonly IHandlrNavigator _handlrNavigator;
+        private readonly IHandlerNavigator _handlerNavigator;
 
         private readonly IIdentifier _mediatrRequestIdentifier;
 
@@ -32,22 +32,22 @@ namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR.Actions
         internal GoToHandlrContextAction
         (
             LanguageIndependentContextActionDataProvider dataProvider,
-            IHandlrNavigator handlrNavigator
+            IHandlerNavigator handlerNavigator
         )
         {
             Guard.ThrowIfIsNull(dataProvider, nameof(dataProvider));
-            Guard.ThrowIfIsNull(handlrNavigator, nameof(handlrNavigator));
+            Guard.ThrowIfIsNull(handlerNavigator, nameof(handlerNavigator));
 
             Logger.Instance.Log(LoggingLevel.WARN, "Ctor called.");
 
-            _handlrNavigator = handlrNavigator;
+            _handlerNavigator = handlerNavigator;
             _mediatrRequestIdentifier = GetSelectedMediatrRequest(dataProvider);
         }
 
         public GoToHandlrContextAction
         (
             LanguageIndependentContextActionDataProvider dataProvider
-        ) : this(dataProvider, new HandlrNavigator(new MediatR()))
+        ) : this(dataProvider, new HandlerNavigator(new MediatR()))
         {
         }
 
@@ -78,7 +78,7 @@ namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR.Actions
                 "ExecutePsiTransaction"
             );
 
-            _handlrNavigator.Navigate(_mediatrRequestIdentifier);
+            _handlerNavigator.Navigate(_mediatrRequestIdentifier);
 
             return DefaultActions.Empty;
         }
@@ -93,7 +93,7 @@ namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR.Actions
             if (selectedElement is null)
                 return new NullIdentifier(dataProvider.PsiModule);
             
-            IIdentifier? selectedIdentifier = selectedElement is IIdentifier identifier ? identifier : selectedElement.NextSibling is IIdentifier nextSiblingIdentifier ? nextSiblingIdentifier : null;
+            IIdentifier? selectedIdentifier = selectedElement as IIdentifier ?? selectedElement.NextSibling as IIdentifier;
             
             if (selectedIdentifier is null)
             {
@@ -106,7 +106,7 @@ namespace NoSuchCompany.ReSharperPlugin.FindMyHandlR.Actions
                 return new NullIdentifier(dataProvider.PsiModule);
             }
 
-            if (!_handlrNavigator.IsRequest(selectedIdentifier))
+            if (!_handlerNavigator.IsRequest(selectedIdentifier))
             {
                 Logger.Instance.Log
                 (
