@@ -1,5 +1,5 @@
 $PluginId = "NoSuchCompany.MediatrPlugin"
-$SolutionPath = "$PSScriptRoot\NoSuchCompany.MediatrPlugin.sln"
+$SolutionPath = "$PSScriptRoot\MediatorPlugin.sln"
 $SourceBasePath = "$PSScriptRoot\src\dotnet"
 
 $VsWhereOutput = [xml] (& "$PSScriptRoot\tools\vswhere.exe" -format xml -products *)

@@ -1,12 +1,12 @@
 ﻿<Project>
 
   <PropertyGroup>
-    <SdkVersion>2025.1.0-eap08</SdkVersion>
+    <SdkVersion>2025.2.0-eap01</SdkVersion>
 
-    <Title>MediatR Extensions</Title>
+    <Title>Mediator Extensions</Title>
     <Description>Ever got frustrated to find out where was the handler of a MediatR's IRequest? Say no more. This plugin provides a context action to easily reach the handler of any MediatR request. Select your MediatR request, click on that action and boom you will be automatically transported to the appropriate handler.</Description>
 
-    <Authors>NoSuch Company</Authors>
+    <Authors>Drifting Bytes Labs</Authors>
     <Copyright></Copyright>
     <PackageTags>mediatr</PackageTags>
 
