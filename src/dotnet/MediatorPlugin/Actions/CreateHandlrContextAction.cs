@@ -4,6 +4,7 @@ using JetBrains.Diagnostics;
 using JetBrains.DocumentModel;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Feature.Services.ContextActions;
+using JetBrains.ReSharper.Feature.Services.LiveTemplates.Scope;
 using JetBrains.ReSharper.Psi.CSharp.Tree;
 using JetBrains.ReSharper.Psi.ExtensionsAPI.Tree;
 using JetBrains.ReSharper.Psi.Tree;
