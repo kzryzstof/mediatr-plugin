@@ -26,3 +26,4 @@ _dotTrace*
 /test-solution/packages/
 .idea
 */**/Packages
+/**/.intellijPlatform
