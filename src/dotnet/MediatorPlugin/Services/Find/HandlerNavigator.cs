@@ -15,8 +15,6 @@ internal sealed class HandlerNavigator : IHandlerNavigator
 		IMediator mediator
 	)
 	{
-		Guard.ThrowIfIsNull(mediator, nameof(mediator));
-
 		_mediator = mediator;
 	}
 		
@@ -25,9 +23,7 @@ internal sealed class HandlerNavigator : IHandlerNavigator
 		IIdentifier identifier
 	)
 	{
-		Guard.ThrowIfIsNull(identifier, nameof(identifier));
-
-		return _mediator.IsRequest(identifier);
+		return _mediator.IsSupported(identifier);
 	}
 		
 	public IEnumerable<IDeclaredElement> GetHandlers
@@ -35,9 +31,11 @@ internal sealed class HandlerNavigator : IHandlerNavigator
 		IIdentifier selectedIdentifier
 	)
 	{
-		Guard.ThrowIfIsNull(selectedIdentifier, nameof(selectedIdentifier));
-
-		Logger.Instance.Log(LoggingLevel.INFO, $"Looking for a possible MediatR handler that is using the type '{selectedIdentifier.Name}'");
+		Logger.Instance.Log
+		(
+			LoggingLevel.INFO,
+			$"Looking for a possible MediatR handler that is using the type '{selectedIdentifier.Name}'"
+		);
 
 		return _mediator.FindHandlers(selectedIdentifier);
 	}
