@@ -12,7 +12,7 @@ internal interface IMediator
         IIdentifier identifier
     );
 
-    bool IsRequest
+    bool IsSupported
     (
         IIdentifier identifier
     );

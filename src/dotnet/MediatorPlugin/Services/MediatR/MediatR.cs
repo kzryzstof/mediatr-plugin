@@ -21,6 +21,14 @@ namespace ReSharper.MediatorPlugin.Services.MediatR;
 
 internal sealed class MediatR : IMediator
 {
+    private const string MediatrModuleName = "MediatR";
+    
+    private const string MediatrBaseRequestFullyQualifiedName = "MediatR.IBaseRequest";
+    private const string MediatrNotificationFullyQualifiedName = "MediatR.INotification";
+
+    private const string MediatrRequestHandlerFullyQualifiedName = "MediatR.IRequestHandler<in TRequest, TResponse>";
+    private const string MediatrNotificationHandlerFullyQualifiedName = "MediatR.INotificationHandler<in TNotification>";
+    
     private readonly IHandlrCreator _handlrCreator;
 
     public MediatR(): this(new HandlrCreator()) { }
@@ -29,19 +37,42 @@ internal sealed class MediatR : IMediator
     {
         _handlrCreator = handlrCreator;
     }
-
-    private const string MediatrModuleName = "MediatR";
-        
+    
     public IEnumerable<ITypeElement> FindHandlers
     (
         IIdentifier identifier
     )
     {
-        Guard.ThrowIfIsNull(identifier, nameof(identifier));
+        if (IsMediatrRequest(identifier))
+        {
+            return FindHandlers
+            (
+                identifier,
+                MediatrRequestHandlerFullyQualifiedName
+            );
+        }
+        
+        if (IsMediatrNotification(identifier))
+        {
+            return FindHandlers
+            (
+                identifier,
+                MediatrNotificationHandlerFullyQualifiedName
+            );
+        }
 
+        return [];
+    }
+    
+    private static IEnumerable<ITypeElement> FindHandlers
+    (
+        IIdentifier identifier,
+        string requestHandlerType
+    )
+    {
         IPsiServices psiServices = identifier.GetPsiServices();
 
-        IType mediatrRequestHandlerType = CSharpTypeFactory.CreateType("MediatR.IRequestHandler<in TRequest, TResponse>", identifier);
+        IType mediatrRequestHandlerType = CSharpTypeFactory.CreateType(requestHandlerType, identifier);
         var mediatrRequestHandlerDeclaredType = (IDeclaredType) mediatrRequestHandlerType;
         IResolveResult resolveResult = mediatrRequestHandlerDeclaredType.Resolve();
 
@@ -60,33 +91,70 @@ internal sealed class MediatR : IMediator
 
         //  I do not know why but FindInheritors and GetPossibleInheritors do not return all the handlers by themselves.
         //  I have to union both results of each to get all the actual IRequestHandler implementations.
-        var results = inheritorsConsumer
+        List<ITypeElement> results = inheritorsConsumer
             .FoundElements
             .Union
             (
                 psiServices
-                .Symbols
-                .GetPossibleInheritors(resolveResult.DeclaredElement?.ShortName ?? "not found")
+                    .Symbols
+                    .GetPossibleInheritors(resolveResult.DeclaredElement?.ShortName ?? "not found")
             )
             .ToList();
 
-        Logger.Instance.Log(LoggingLevel.VERBOSE, $"Possible inheritors found: {string.Join(",", results.Select(i => i.GetClrName().FullName))}");
+        Logger.Instance.Log
+        (
+            LoggingLevel.VERBOSE,
+            $"Possible inheritors found: {string.Join(",", results.Select(i => i.GetClrName().FullName))}"
+        );
 
         return SelectInheritors(results, identifier);
     }
 
-    public bool IsRequest
+    public bool IsSupported
     (
         IIdentifier identifier
     )
     {
-        Guard.ThrowIfIsNull(identifier, nameof(identifier));
-                
-        ICSharpTypeConversionRule typeConversionRule = identifier.GetPsiModule().GetTypeConversionRule();
+        return IsMediatrRequest(identifier)
+               || IsMediatrNotification(identifier);
+    }
+
+    private static bool IsMediatrRequest
+    (
+        IIdentifier identifier
+    )
+    {
+        return IsSupported(identifier, MediatrBaseRequestFullyQualifiedName);
+    }
+
+    private static bool IsMediatrNotification
+    (
+        IIdentifier identifier
+    )
+    {
+        return IsSupported(identifier, MediatrNotificationFullyQualifiedName);
+    }
+
+    private static bool IsSupported
+    (
+        IIdentifier identifier,
+        string requestType
+    )
+    {
+        ICSharpTypeConversionRule typeConversionRule = identifier
+            .GetPsiModule()
+            .GetTypeConversionRule();
             
         IDeclaredType declaredType = identifier.ToDeclaredType();
 
-        IPsiModule? mediatrModule = identifier.GetPsiServices().Modules.GetModules().FirstOrDefault(module => string.Equals(module.Name, MediatrModuleName, StringComparison.OrdinalIgnoreCase));
+        IPsiModule? mediatrModule = identifier
+            .GetPsiServices()
+            .Modules
+            .GetModules()
+            .FirstOrDefault
+            (
+                module => string.Equals(module.Name, MediatrModuleName, StringComparison.OrdinalIgnoreCase)
+            );
 
         if (mediatrModule == null)
         {
@@ -94,12 +162,12 @@ internal sealed class MediatR : IMediator
             return false;
         }
 
-        IType mediatrBaseRequestType = TypeFactory.CreateTypeByCLRName("MediatR.IBaseRequest", mediatrModule);
+        IType mediatrBaseRequestType = TypeFactory.CreateTypeByCLRName(requestType, mediatrModule);
 
         if (!mediatrBaseRequestType.IsResolved)
         {
             //  This happens if there are errors in the solution and ReSharper does not know about the MediatR module yet.
-            Logger.Instance.Log(LoggingLevel.VERBOSE, $"> The mediatR IBaseRequest type is not resolved");
+            Logger.Instance.Log(LoggingLevel.VERBOSE, "> The mediatR IBaseRequest type is not resolved");
             return false;
         }
             
@@ -118,7 +186,7 @@ internal sealed class MediatR : IMediator
         return _handlrCreator.CreateHandlrFor(identifier);
     } 
         
-    private IEnumerable<ITypeElement> SelectInheritors
+    private static IEnumerable<ITypeElement> SelectInheritors
     (
         IEnumerable<ITypeElement> inheritors,
         IIdentifier selectedIdentifier

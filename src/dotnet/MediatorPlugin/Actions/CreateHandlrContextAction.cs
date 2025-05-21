@@ -109,7 +109,7 @@ namespace ReSharper.MediatorPlugin.Actions
                 return new NullIdentifier(dataProvider.PsiModule);
             }
 
-            if (!_mediatR.IsRequest(someIdentifier))
+            if (!_mediatR.IsSupported(someIdentifier))
             {
                 Logger.Instance.Log(LoggingLevel.VERBOSE, "The selected tree node is not mediatR request.");
                 return new NullIdentifier(dataProvider.PsiModule);
