@@ -10,12 +10,12 @@ using JetBrains.ReSharper.Psi.Resolve;
 using JetBrains.ReSharper.Psi.Tree;
 using ReSharper.MediatorPlugin.ReSharper.Psi.Tree;
 
-namespace ReSharper.MediatorPlugin.Services;
+namespace ReSharper.MediatorPlugin.Services.Create;
 
-public class HandlrCreator : IHandlrCreator
+internal sealed class HandlrCreator : IHandlrCreator
 {
-    private const string _handlerTypePostfix = "Handler";
-    private const string _requestHandlerInterfaceName = "IRequestHandler";
+    private const string HandlerTypePostfix = "Handler";
+    private const string RequestHandlerInterfaceName = "IRequestHandler";
 
     public IClassDeclaration CreateHandlrFor(IIdentifier identifier)
     {
@@ -30,7 +30,7 @@ public class HandlrCreator : IHandlrCreator
         bool hasReturnType = queryReturnType is not null;
 
         string requestTypeName = requestType.ShortName;
-        string handlerTypeName = requestTypeName + _handlerTypePostfix;
+        string handlerTypeName = requestTypeName + HandlerTypePostfix;
 
         var elementFactory = CSharpElementFactory.GetInstance(identifier);
 
@@ -40,7 +40,7 @@ public class HandlrCreator : IHandlrCreator
         (
             classFormat,
             handlerTypeName,
-            _requestHandlerInterfaceName,
+            RequestHandlerInterfaceName,
             requestTypeName,
             queryReturnType
         );
@@ -73,7 +73,10 @@ public class HandlrCreator : IHandlrCreator
         return isQuery ? (classFormat: QueryHandlerFormat, methodFormat: QueryStubHandleMethodFormat) : (classFormat: CommandHandlerFormat, methodFormat: CommandStubHandleMethodFormat);
     }
 
-    private static IType? GetMediatrQueryReturnType(ITypeElement requestType)
+    private static IType? GetMediatrQueryReturnType
+    (
+        ITypeElement requestType
+    )
     {
         // search through base classes in case when there is some custom request base type
         var searchRequestBasesRequest = new SearchBasesRequest(requestType);

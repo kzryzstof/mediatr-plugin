@@ -3,13 +3,16 @@ using JetBrains.Application.UI.Actions;
 using JetBrains.Application.UI.ActionsRevised.Menu;
 using JetBrains.Application.UI.ActionSystem.ActionsRevised.Menu;
 using JetBrains.Diagnostics;
+using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Feature.Services.Menu;
 using JetBrains.ReSharper.Feature.Services.Navigation.ContextNavigation;
 using JetBrains.ReSharper.Psi.Files;
 using JetBrains.ReSharper.Psi.Tree;
 using ReSharper.MediatorPlugin.Diagnostics;
 using ReSharper.MediatorPlugin.Services;
+using ReSharper.MediatorPlugin.Services.Find;
 using ReSharper.MediatorPlugin.Services.MediatR;
+using ReSharper.MediatorPlugin.Services.Navigation;
 
 namespace ReSharper.MediatorPlugin.Actions
 {
@@ -23,12 +26,14 @@ namespace ReSharper.MediatorPlugin.Actions
     public class GoToHandlrAction : IActionWithExecuteRequirement, IExecutableAction, IInsertLast<NavigateMenu>
     {
         private readonly IHandlerNavigator _handlerNavigator;
+        private readonly HandlerSelector _handlerSelector;
 
         public GoToHandlrAction()
         {
             Logger.Instance.Log(LoggingLevel.VERBOSE, "GoToHandlrAction instance has been created");
 
             _handlerNavigator = new HandlerNavigator(new MediatR());
+            _handlerSelector = new HandlerSelector();
         }
 
         public void Execute
@@ -39,6 +44,7 @@ namespace ReSharper.MediatorPlugin.Actions
         {
             Guard.ThrowIfIsNull(context, nameof(context));
 
+            var solution = context.GetComponent<ISolution>();
             var selectedTreeNode = context.GetSelectedTreeNode<ITreeNode>();
 
             if (selectedTreeNode is not IIdentifier selectedIdentifier)
@@ -47,10 +53,18 @@ namespace ReSharper.MediatorPlugin.Actions
                 return;
             }
 
-            _handlerNavigator.Navigate(selectedIdentifier);
+            _handlerSelector.Navigate
+            (
+                solution,
+                selectedTreeNode,
+                new DataContextNavigationOptionsFactory(context)
+            );
         }
 
-        public IActionRequirement GetRequirement(IDataContext dataContext)
+        public IActionRequirement GetRequirement
+        (
+            IDataContext dataContext
+        )
         {
             return CommitAllDocumentsRequirement.TryGetInstance(dataContext);
         }

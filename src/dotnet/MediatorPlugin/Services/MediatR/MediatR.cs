@@ -15,6 +15,7 @@ using JetBrains.ReSharper.Psi.Util;
 using ReSharper.MediatorPlugin.Diagnostics;
 using ReSharper.MediatorPlugin.ReSharper.Psi.Search;
 using ReSharper.MediatorPlugin.ReSharper.Psi.Tree;
+using ReSharper.MediatorPlugin.Services.Create;
 
 namespace ReSharper.MediatorPlugin.Services.MediatR
 {
@@ -31,7 +32,10 @@ namespace ReSharper.MediatorPlugin.Services.MediatR
 
         private const string MediatrModuleName = "MediatR";
         
-        public ITypeElement? FindHandler(IIdentifier identifier)
+        public IEnumerable<ITypeElement> FindHandlers
+        (
+            IIdentifier identifier
+        )
         {
             Guard.ThrowIfIsNull(identifier, nameof(identifier));
 
@@ -66,9 +70,7 @@ namespace ReSharper.MediatorPlugin.Services.MediatR
 
             Logger.Instance.Log(LoggingLevel.VERBOSE, $"Possible inheritors found: {string.Join(",", results.Select(i => i.GetClrName().FullName))}");
 
-            ITypeElement? inheritorTypeElement = SelectInheritor(results, identifier);
-
-            return inheritorTypeElement;
+            return SelectInheritors(results, identifier);
         }
 
         public bool IsRequest(IIdentifier identifier)
@@ -111,10 +113,14 @@ namespace ReSharper.MediatorPlugin.Services.MediatR
             return _handlrCreator.CreateHandlrFor(identifier);
         } 
         
-        private ITypeElement? SelectInheritor(IEnumerable<ITypeElement> inheritors, IIdentifier selectedIdentifier)
+        private IEnumerable<ITypeElement> SelectInheritors
+        (
+            IEnumerable<ITypeElement> inheritors,
+            IIdentifier selectedIdentifier
+        )
         {
             IDeclaredType selectedDeclaredType = selectedIdentifier.ToDeclaredType();
-            string? selectedFullTypeName = selectedDeclaredType.GetClrName().FullName;
+            string selectedFullTypeName = selectedDeclaredType.GetClrName().FullName;
             
             Logger.Instance.Log(LoggingLevel.VERBOSE, $"Selected type: '{selectedFullTypeName}'");
 
@@ -160,10 +166,8 @@ namespace ReSharper.MediatorPlugin.Services.MediatR
 
                 Logger.Instance.Log(LoggingLevel.VERBOSE, $"Found: '{inheritor.GetClrName().FullName}'.");
 
-                return inheritor;
+                yield return inheritor;
             }
-
-            return null;
         }
         
         private static IEnumerable<IReferenceName> GetInheritedTypeUsageName

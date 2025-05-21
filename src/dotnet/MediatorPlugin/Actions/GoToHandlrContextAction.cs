@@ -1,5 +1,6 @@
 using System;
 using JetBrains.Application.Progress;
+using JetBrains.Application.UI.PopupLayout;
 using JetBrains.Diagnostics;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Feature.Services.ContextActions;
@@ -10,7 +11,9 @@ using JetBrains.Util;
 using ReSharper.MediatorPlugin.Diagnostics;
 using ReSharper.MediatorPlugin.ReSharper.Psi.Tree;
 using ReSharper.MediatorPlugin.Services;
+using ReSharper.MediatorPlugin.Services.Find;
 using ReSharper.MediatorPlugin.Services.MediatR;
+using ReSharper.MediatorPlugin.Services.Navigation;
 
 namespace ReSharper.MediatorPlugin.Actions
 {
@@ -25,7 +28,9 @@ namespace ReSharper.MediatorPlugin.Actions
     public sealed class GoToHandlrContextAction : ContextActionBase
     {
         private readonly IHandlerNavigator _handlerNavigator;
-
+        private readonly HandlerSelector _handlerSelector;
+        private readonly LanguageIndependentContextActionDataProvider _dataProvider;
+        
         private readonly IIdentifier _mediatrRequestIdentifier;
 
         public override string Text => "Go to HandlR";
@@ -41,7 +46,9 @@ namespace ReSharper.MediatorPlugin.Actions
 
             Logger.Instance.Log(LoggingLevel.WARN, "Ctor called.");
 
+            _dataProvider = dataProvider;
             _handlerNavigator = handlerNavigator;
+            _handlerSelector = new HandlerSelector();
             _mediatrRequestIdentifier = GetSelectedMediatrRequest(dataProvider);
         }
 
@@ -51,20 +58,28 @@ namespace ReSharper.MediatorPlugin.Actions
         ) : this(dataProvider, new HandlerNavigator(new MediatR()))
         {
         }
-
-        /// <summary>
-        /// Finds out whether the selected type implements MediatR's 'IBaseRequest'.
-        /// </summary>
-        /// <param name="_"></param>
-        /// <returns></returns>
+        
         public override bool IsAvailable
         (
-            IUserDataHolder _
+            IUserDataHolder dataHolder
         )
         {
             Logger.Instance.Log(LoggingLevel.WARN, "IsAvailable");
-
+            
             return _mediatrRequestIdentifier is not NullIdentifier;
+        }
+
+        private PopupWindowContextSource _windowContext;
+        
+        public override void Execute
+        (
+            ISolution solution,
+            ITextControl textControl
+        )
+        {
+            _windowContext = textControl.PopupWindowContextFactory.ForCaret();
+            
+            base.Execute(solution, textControl);
         }
 
         protected override Action<ITextControl> ExecutePsiTransaction
@@ -79,8 +94,13 @@ namespace ReSharper.MediatorPlugin.Actions
                 "ExecutePsiTransaction"
             );
 
-            _handlerNavigator.Navigate(_mediatrRequestIdentifier);
-
+            _handlerSelector.Navigate
+            (
+                solution,
+                _mediatrRequestIdentifier,
+                new PopupWindowContextSourceNavigationOptionsFactory(_windowContext)  
+            );
+            
             return DefaultActions.Empty;
         }
 
@@ -106,7 +126,7 @@ namespace ReSharper.MediatorPlugin.Actions
                 
                 return new NullIdentifier(dataProvider.PsiModule);
             }
-
+            
             if (!_handlerNavigator.IsRequest(selectedIdentifier))
             {
                 Logger.Instance.Log

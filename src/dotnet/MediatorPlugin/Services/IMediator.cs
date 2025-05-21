@@ -1,15 +1,24 @@
+using System.Collections.Generic;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CSharp.Tree;
 using JetBrains.ReSharper.Psi.Tree;
 
-namespace ReSharper.MediatorPlugin.Services
-{
-    public interface IMediator
-    {
-        ITypeElement? FindHandler(IIdentifier identifier);
+namespace ReSharper.MediatorPlugin.Services;
 
-        bool IsRequest(IIdentifier identifier);
+internal interface IMediator
+{
+    IEnumerable<ITypeElement> FindHandlers
+    (
+        IIdentifier identifier
+    );
+
+    bool IsRequest
+    (
+        IIdentifier identifier
+    );
         
-        IClassLikeDeclaration CreateHandlrFor(IIdentifier identifier);
-    }
+    IClassLikeDeclaration CreateHandlrFor
+    (
+        IIdentifier identifier
+    );
 }
