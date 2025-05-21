@@ -1,5 +1,5 @@
 Param(
-    $RootSuffix = "MediatR",
+    $RootSuffix = "Mediator",
     $Version = "9999.0.0"
 )
 

@@ -1,6 +1,6 @@
 <idea-plugin require-restart="true">
   <id>ca.nosuchcompany.rider.plugins.mediatr</id>
-  <name>MediatR Extensions</name>
+  <name>Mediator Extensions</name>
   <version>_PLACEHOLDER_</version>
   <vendor url="https://github.com/kzryzstof/mediatr-plugin">NoSuch Company</vendor>
   <idea-version since-build="_PLACEHOLDER_" until-build="_PLACEHOLDER_" />
@@ -14,10 +14,10 @@
 
   <actions>
     <group id="org.intellij.sdk.action.GroupedActions" 
-           text="MediatR extensions" 
+           text="Mediator extensions" 
            popup="true">
       <add-to-group group-id="GoToMenu" />
-      <action id="NoSuchCompany.ReSharper.MediatrPlugin.Actions.GoToHandlrAction"
+      <action id="ReSharper.MediatorPlugin.Actions.GoToHandlrAction"
               class="ca.nosuchcompany.rider.plugins.mediatr.GoToHandlrAction">
         <keyboard-shortcut keymap="$default" first-keystroke="alt H" replace-all="true" />
       </action>

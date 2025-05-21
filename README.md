@@ -6,7 +6,7 @@
 
 **How to run on Windows**
 
-- Open the solution `NoSuchCompany.MediatrPlugin.sln` in Visual Studio;
+- Open the solution `MediatorPlugin.sln` in Visual Studio;
 - Make sure there is a valid NuGet feed configured (`https://api.nuget.org/v3/index.json`);
 - Open a command prompt in Powershell;
 - Run the command `./buildPlugin.ps1` (you might need to remove the Rider project if it causes the build to fail);
