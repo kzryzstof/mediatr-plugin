@@ -60,21 +60,25 @@ internal sealed class MediatR : IMediator
 
         //  I do not know why but FindInheritors and GetPossibleInheritors do not return all the handlers by themselves.
         //  I have to union both results of each to get all the actual IRequestHandler implementations.
-        IEnumerable<ITypeElement> results = inheritorsConsumer
+        var results = inheritorsConsumer
             .FoundElements
             .Union
             (
                 psiServices
                 .Symbols
                 .GetPossibleInheritors(resolveResult.DeclaredElement?.ShortName ?? "not found")
-            );
+            )
+            .ToList();
 
         Logger.Instance.Log(LoggingLevel.VERBOSE, $"Possible inheritors found: {string.Join(",", results.Select(i => i.GetClrName().FullName))}");
 
-        return SelectInheritors(results ?? [], identifier);
+        return SelectInheritors(results, identifier);
     }
 
-    public bool IsRequest(IIdentifier identifier)
+    public bool IsRequest
+    (
+        IIdentifier identifier
+    )
     {
         Guard.ThrowIfIsNull(identifier, nameof(identifier));
                 

@@ -3,11 +3,18 @@ using JetBrains.ReSharper.Feature.Services.Navigation;
 
 namespace ReSharper.MediatorPlugin.Services.Navigation;
 
-internal sealed class PopupWindowContextSourceNavigationOptionsFactory
-(
-    PopupWindowContextSource windowContext
-) : INavigationOptionsFactory
+internal sealed class PopupWindowContextSourceNavigationOptionsFactory : INavigationOptionsFactory
 {
+    private readonly PopupWindowContextSource _windowContext;
+
+    public PopupWindowContextSourceNavigationOptionsFactory
+    (
+        PopupWindowContextSource windowContext
+    )
+    {
+        _windowContext = windowContext;
+    }
+
     public NavigationOptions Get
     (
         string title
@@ -15,7 +22,7 @@ internal sealed class PopupWindowContextSourceNavigationOptionsFactory
     {
         return NavigationOptions.FromWindowContext
         (
-            windowContext,
+            _windowContext,
             title
         );
     }

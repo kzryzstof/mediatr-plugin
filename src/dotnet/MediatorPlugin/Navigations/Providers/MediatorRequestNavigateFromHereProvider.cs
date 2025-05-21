@@ -21,8 +21,8 @@ public sealed class MediatorRequestNavigateFromHereProvider : INavigateFromHereP
         IDataContext dataContext
     )
     {
-        return 
-        [
+        return new List<ContextNavigation>
+        {
             new ContextNavigation
             (
                 "Go to mediator handler",
@@ -47,6 +47,6 @@ public sealed class MediatorRequestNavigateFromHereProvider : INavigateFromHereP
                     ); 
                 }
             )
-        ];
+        };
     }
 }

@@ -3,11 +3,18 @@ using JetBrains.ReSharper.Feature.Services.Navigation;
 
 namespace ReSharper.MediatorPlugin.Services.Navigation;
 
-internal sealed class DataContextNavigationOptionsFactory
-(
-    IDataContext dataContext
-) : INavigationOptionsFactory
+internal sealed class DataContextNavigationOptionsFactory : INavigationOptionsFactory
 {
+    private readonly IDataContext _dataContext;
+
+    public DataContextNavigationOptionsFactory
+    (
+        IDataContext dataContext
+    )
+    {
+        _dataContext = dataContext;
+    }
+
     public NavigationOptions Get
     (
         string title
@@ -15,7 +22,7 @@ internal sealed class DataContextNavigationOptionsFactory
     {
         return NavigationOptions.FromDataContext
         (
-            dataContext,
+            _dataContext,
             title
         );
     }

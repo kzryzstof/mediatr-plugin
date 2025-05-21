@@ -5,5 +5,8 @@ namespace ReSharper.MediatorPlugin.Services.Create;
 
 internal interface IHandlrCreator
 {
-    IClassDeclaration CreateHandlrFor(IIdentifier identifier);
+    IClassDeclaration CreateHandlrFor
+    (
+        IIdentifier identifier
+    );
 }
