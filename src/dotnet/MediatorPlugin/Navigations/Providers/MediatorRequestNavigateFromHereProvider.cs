@@ -14,7 +14,7 @@ namespace ReSharper.MediatorPlugin.Navigations.Providers;
 [ContextNavigationProvider(Instantiation.DemandAnyThreadSafe)]
 public sealed class MediatorRequestNavigateFromHereProvider : INavigateFromHereProvider
 {
-    private readonly HandlerSelector _handlerSelector = new();
+    private readonly IHandlerSelector _handlerSelector = new HandlerSelector();
 
     public IEnumerable<ContextNavigation> CreateWorkflow
     (
@@ -39,7 +39,7 @@ public sealed class MediatorRequestNavigateFromHereProvider : INavigateFromHereP
                         return;
                     }
                     
-                    _handlerSelector.Navigate
+                    _handlerSelector.NavigateToHandler
                     (
                         solution,
                         selectedTreeNode,

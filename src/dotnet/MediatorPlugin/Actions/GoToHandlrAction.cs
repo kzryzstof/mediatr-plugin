@@ -9,91 +9,86 @@ using JetBrains.ReSharper.Feature.Services.Navigation.ContextNavigation;
 using JetBrains.ReSharper.Psi.Files;
 using JetBrains.ReSharper.Psi.Tree;
 using ReSharper.MediatorPlugin.Diagnostics;
-using ReSharper.MediatorPlugin.Services;
 using ReSharper.MediatorPlugin.Services.Find;
-using ReSharper.MediatorPlugin.Services.MediatR;
 using ReSharper.MediatorPlugin.Services.Navigation;
 
-namespace ReSharper.MediatorPlugin.Actions
+namespace ReSharper.MediatorPlugin.Actions;
+
+[Action
+(
+    "GoToHandlrAction",
+    "Go to Handler",
+    IdeaShortcuts = new [] {"Alt+H"}, 
+    VsShortcuts = new [] {"Alt+H"}
+)]
+public class GoToHandlrAction : IActionWithExecuteRequirement, IExecutableAction, IInsertLast<NavigateMenu>
 {
-    [Action
-    (
-        "GoToHandlrAction",
-        "Go to HandlR",
-        IdeaShortcuts = new [] {"Alt+H"}, 
-        VsShortcuts = new [] {"Alt+H"}
-    )]
-    public class GoToHandlrAction : IActionWithExecuteRequirement, IExecutableAction, IInsertLast<NavigateMenu>
+    private readonly IHandlerSelector _handlerSelector;
+
+    public GoToHandlrAction()
     {
-        private readonly IHandlerNavigator _handlerNavigator;
-        private readonly HandlerSelector _handlerSelector;
+        Logger.Instance.Log(LoggingLevel.VERBOSE, "GoToHandlrAction instance has been created");
 
-        public GoToHandlrAction()
+        _handlerSelector = new HandlerSelector();
+    }
+
+    public void Execute
+    (
+        IDataContext context,
+        DelegateExecute nextExecute
+    )
+    {
+        Guard.ThrowIfIsNull(context, nameof(context));
+
+        var solution = context.GetComponent<ISolution>();
+        var selectedTreeNode = context.GetSelectedTreeNode<ITreeNode>();
+
+        if (selectedTreeNode is not IIdentifier selectedIdentifier)
         {
-            Logger.Instance.Log(LoggingLevel.VERBOSE, "GoToHandlrAction instance has been created");
-
-            _handlerNavigator = new HandlerNavigator(new MediatR());
-            _handlerSelector = new HandlerSelector();
+            Logger.Instance.Log(LoggingLevel.VERBOSE, $"Selected element is not an instance {nameof(IIdentifier)}");
+            return;
         }
 
-        public void Execute
+        _handlerSelector.NavigateToHandler
         (
-            IDataContext context,
-            DelegateExecute nextExecute
-        )
-        {
-            Guard.ThrowIfIsNull(context, nameof(context));
+            solution,
+            selectedTreeNode,
+            new DataContextNavigationOptionsFactory(context)
+        );
+    }
 
-            var solution = context.GetComponent<ISolution>();
-            var selectedTreeNode = context.GetSelectedTreeNode<ITreeNode>();
+    public IActionRequirement GetRequirement
+    (
+        IDataContext dataContext
+    )
+    {
+        return CommitAllDocumentsRequirement.TryGetInstance(dataContext);
+    }
 
-            if (selectedTreeNode is not IIdentifier selectedIdentifier)
-            {
-                Logger.Instance.Log(LoggingLevel.VERBOSE, $"Selected element is not an instance {nameof(IIdentifier)}");
-                return;
-            }
+    public bool Update
+    (
+        IDataContext context,
+        ActionPresentation presentation,
+        DelegateUpdate nextUpdate
+    )
+    {
+        Guard.ThrowIfIsNull(context, nameof(context));
 
-            _handlerSelector.Navigate
-            (
-                solution,
-                selectedTreeNode,
-                new DataContextNavigationOptionsFactory(context)
-            );
-        }
+        return IsMediatrRequestSelected(context);
+    }
 
-        public IActionRequirement GetRequirement
-        (
-            IDataContext dataContext
-        )
-        {
-            return CommitAllDocumentsRequirement.TryGetInstance(dataContext);
-        }
+    private bool IsMediatrRequestSelected
+    (
+        IDataContext context
+    )
+    {
+        var selectedTreeNode = context.GetSelectedTreeNode<ITreeNode>();
 
-        public bool Update
-        (
-            IDataContext context,
-            ActionPresentation presentation,
-            DelegateUpdate nextUpdate
-        )
-        {
-            Guard.ThrowIfIsNull(context, nameof(context));
+        if (selectedTreeNode is IIdentifier selectedIdentifier && _handlerSelector.IsMediatorRequestSupported(selectedIdentifier))
+            return true;
 
-            return IsMediatrRequestSelected(context);
-        }
-
-        private bool IsMediatrRequestSelected
-        (
-            IDataContext context
-        )
-        {
-            var selectedTreeNode = context.GetSelectedTreeNode<ITreeNode>();
-
-            if (selectedTreeNode is IIdentifier selectedIdentifier && _handlerNavigator.IsRequest(selectedIdentifier))
-                return true;
-
-            Logger.Instance.Log(LoggingLevel.VERBOSE, "Selected element is not an MediatR request");
+        Logger.Instance.Log(LoggingLevel.VERBOSE, "Selected element is not a supported Mediator request");
             
-            return false;
-        }
+        return false;
     }
 }

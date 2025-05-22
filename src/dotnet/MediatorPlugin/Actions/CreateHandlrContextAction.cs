@@ -29,7 +29,7 @@ namespace ReSharper.MediatorPlugin.Actions
     public sealed class CreateHandlrContextAction : ContextActionBase
     {
         private readonly LanguageIndependentContextActionDataProvider _dataProvider;
-        private readonly IMediator _mediatR;
+        private readonly IMediatorLibrary _mediatR;
 
         private readonly IIdentifier _mediatrRequestIdentifier;
 
@@ -38,7 +38,7 @@ namespace ReSharper.MediatorPlugin.Actions
         internal CreateHandlrContextAction
         (
             LanguageIndependentContextActionDataProvider dataProvider,
-            IMediator mediatR
+            IMediatorLibrary mediatR
         )
         {
             Guard.ThrowIfIsNull(dataProvider, nameof(dataProvider));
@@ -52,7 +52,7 @@ namespace ReSharper.MediatorPlugin.Actions
         }
 
         public CreateHandlrContextAction(LanguageIndependentContextActionDataProvider dataProvider)
-            : this(dataProvider, new MediatR())
+            : this(dataProvider, new MediatRLibrary())
         {
         }
 
