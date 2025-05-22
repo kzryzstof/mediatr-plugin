@@ -8,12 +8,14 @@ using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CSharp;
 using JetBrains.ReSharper.Psi.CSharp.Conversions;
 using JetBrains.ReSharper.Psi.CSharp.Tree;
+using JetBrains.ReSharper.Psi.Impl.CodeStyle;
 using JetBrains.ReSharper.Psi.Modules;
 using JetBrains.ReSharper.Psi.Resolve;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.ReSharper.Psi.Util;
 using ReSharper.MediatorPlugin.Diagnostics;
 using ReSharper.MediatorPlugin.ReSharper.Psi.Search;
+using Xunit;
 
 namespace ReSharper.MediatorPlugin.ReSharper.Psi.Tree;
 
@@ -41,10 +43,12 @@ internal static class IdentifierExtensions
     {
         IPsiServices psiServices = identifier.GetPsiServices();
 
+        //  Need to get the PSI 
+        var psiModules = psiServices.GetComponent<IPsiModules>();
+        IPsiModule? mediatrPsiModule = psiModules.GetModules().FirstOrDefault(psiModule => psiModule.Name == "MediatR");
+        ITypeElement? typeElement = TypeFactory.CreateTypeByCLRName(requestHandlerType, mediatrPsiModule).GetTypeElement();
+
         if (identifier.Parent is not IDeclaration declaration)
-            return EmptyTypeElements;
-        
-        if (identifier.Parent is not ITypeDeclaration typeDeclaration)
             return EmptyTypeElements;
         
         var inheritorsConsumer = new InheritorsConsumer();
@@ -53,7 +57,7 @@ internal static class IdentifierExtensions
             .SingleThreadedFinder
             .FindInheritors
             (
-                typeDeclaration.DeclaredElement!, 
+                typeElement, 
                 inheritorsConsumer,
                 new ProgressIndicator(Lifetime.Eternal)
             );
