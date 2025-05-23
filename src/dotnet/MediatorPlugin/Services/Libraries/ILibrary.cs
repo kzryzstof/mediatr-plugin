@@ -5,7 +5,7 @@ using JetBrains.ReSharper.Psi.Tree;
 
 namespace ReSharper.MediatorPlugin.Services;
 
-internal interface IMediatorLibrary
+internal interface ILibrary
 {
     IEnumerable<ITypeElement> FindHandlers
     (

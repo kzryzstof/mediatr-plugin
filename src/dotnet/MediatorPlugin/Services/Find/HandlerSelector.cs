@@ -12,11 +12,11 @@ namespace ReSharper.MediatorPlugin.Services.Find;
 
 internal sealed class HandlerSelector : IHandlerSelector
 {
-    private readonly IMediatorLibraryAdaptor _mediatorLibraryAdaptor;
+    private readonly ILibraryAdaptor _libraryAdaptor;
 
     public HandlerSelector()
     {
-        _mediatorLibraryAdaptor = new MediatorLibraryAdaptor();
+        _libraryAdaptor = new LibraryAdaptor();
     }
     
     public bool IsMediatorRequestSupported
@@ -24,7 +24,7 @@ internal sealed class HandlerSelector : IHandlerSelector
         IIdentifier identifier
     )
     {
-        return _mediatorLibraryAdaptor.IsSupported(identifier);
+        return _libraryAdaptor.IsSupported(identifier);
     }
     
     public void NavigateToHandler
@@ -42,7 +42,7 @@ internal sealed class HandlerSelector : IHandlerSelector
                     
         var potentialNavigationPoints = new List<INavigationPoint>();
 
-        IEnumerable<IDeclaredElement> result = _mediatorLibraryAdaptor.FindHandlers
+        IEnumerable<IDeclaredElement> result = _libraryAdaptor.FindHandlers
         (
             selectedIdentifier
         );

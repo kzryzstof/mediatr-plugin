@@ -1,96 +1,35 @@
-using System.Collections.Generic;
-using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CSharp.Tree;
 using JetBrains.ReSharper.Psi.Tree;
-using ReSharper.MediatorPlugin.ReSharper.Psi.Tree;
-using ReSharper.MediatorPlugin.Services.Create;
+using ReSharper.MediatorPlugin.Services.Libraries;
 
 namespace ReSharper.MediatorPlugin.Services.MediatR;
 
-internal sealed class MediatorLibrary : IMediatorLibrary
+internal sealed class MediatorLibrary : Library
 {
-    private const string MediatrModuleName = "Mediator";
+    private const string MediatorModuleName = "Mediator";
     
-    private const string MediatrBaseRequestFullyQualifiedName = $"{MediatrModuleName}.IBaseRequest";
-    private const string MediatrNotificationFullyQualifiedName = $"{MediatrModuleName}.INotification";
+    private const string MediatorBaseRequestFullyQualifiedName = $"{MediatorModuleName}.IBaseRequest";
+    private const string MediatorNotificationFullyQualifiedName = $"{MediatorModuleName}.INotification";
 
-    private const string MediatrRequestHandlerFullyQualifiedName = $"{MediatrModuleName}.IRequestHandler<in TRequest, TResponse>";
-    private const string MediatrNotificationHandlerFullyQualifiedName = $"{MediatrModuleName}.INotificationHandler<in TNotification>";
+    private const string MediatorRequestHandlerFullyQualifiedName = $"{MediatorModuleName}.IRequestHandler`1";
+    private const string MediatorNotificationHandlerFullyQualifiedName = $"{MediatorModuleName}.INotificationHandler`1";
     
-    private readonly IHandlrCreator _handlrCreator;
-
-    public MediatorLibrary(): this(new HandlrCreator()) { }
-
-    private MediatorLibrary
+    public MediatorLibrary() : base
     (
-        IHandlrCreator handlrCreator
+        MediatorModuleName,
+        MediatorBaseRequestFullyQualifiedName,
+        MediatorNotificationFullyQualifiedName,
+        MediatorRequestHandlerFullyQualifiedName,
+        MediatorNotificationHandlerFullyQualifiedName
     )
     {
-        _handlrCreator = handlrCreator;
-    }
-    
-    public IEnumerable<ITypeElement> FindHandlers
-    (
-        IIdentifier identifier
-    )
-    {
-        if (IsMediatrRequest(identifier))
-        {
-            return identifier.FindHandlers
-            (
-                MediatrRequestHandlerFullyQualifiedName
-            );
-        }
-        
-        if (IsMediatrNotification(identifier))
-        {
-            return identifier.FindHandlers
-            (
-                MediatrNotificationHandlerFullyQualifiedName
-            );
-        }
-
-        return [];
-    }
-    
-    public bool IsSupported
-    (
-        IIdentifier identifier
-    )
-    {
-        return IsMediatrRequest(identifier)
-               || IsMediatrNotification(identifier);
     }
 
-    public IClassLikeDeclaration CreateHandlrFor
+    public override IClassLikeDeclaration CreateHandlrFor
     (
         IIdentifier identifier
     )
     {
-        return _handlrCreator.CreateHandlrFor(identifier);
-    } 
-        
-    private static bool IsMediatrRequest
-    (
-        IIdentifier identifier
-    )
-    {
-        return identifier.IsRequestTypeSupported
-        (
-            MediatrModuleName,
-            MediatrBaseRequestFullyQualifiedName
-        );
-    }
-
-    private static bool IsMediatrNotification
-    (
-        IIdentifier identifier
-    )
-    {
-        return identifier.IsRequestTypeSupported
-        (
-            MediatrModuleName,
-            MediatrNotificationFullyQualifiedName
-        );
+        throw new System.NotImplementedException();
     }
 }

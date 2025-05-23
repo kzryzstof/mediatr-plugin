@@ -1,96 +1,39 @@
-using System.Collections.Generic;
-using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CSharp.Tree;
 using JetBrains.ReSharper.Psi.Tree;
-using ReSharper.MediatorPlugin.ReSharper.Psi.Tree;
 using ReSharper.MediatorPlugin.Services.Create;
+using ReSharper.MediatorPlugin.Services.Libraries;
 
 namespace ReSharper.MediatorPlugin.Services.MediatR;
 
-internal sealed class MediatRLibrary : IMediatorLibrary
+internal sealed class MediatRLibrary : Library
 {
     private const string MediatrModuleName = "MediatR";
     
     private const string MediatrBaseRequestFullyQualifiedName = $"{MediatrModuleName}.IBaseRequest";
     private const string MediatrNotificationFullyQualifiedName = $"{MediatrModuleName}.INotification";
 
-    private const string MediatrRequestHandlerFullyQualifiedName = $"{MediatrModuleName}.IRequestHandler<in TRequest, TResponse>";
-    private const string MediatrNotificationHandlerFullyQualifiedName = $"{MediatrModuleName}.INotificationHandler<in TNotification>";
+    private const string MediatrRequestHandlerFullyQualifiedName = $"{MediatrModuleName}.IRequestHandler`1";
+    private const string MediatrNotificationHandlerFullyQualifiedName = $"{MediatrModuleName}.INotificationHandler`1";
     
     private readonly IHandlrCreator _handlrCreator;
 
-    public MediatRLibrary(): this(new HandlrCreator()) { }
-
-    private MediatRLibrary
+    public MediatRLibrary() : base
     (
-        IHandlrCreator handlrCreator
+        MediatrModuleName,
+        MediatrBaseRequestFullyQualifiedName,
+        MediatrNotificationFullyQualifiedName,
+        MediatrRequestHandlerFullyQualifiedName,
+        MediatrNotificationHandlerFullyQualifiedName
     )
     {
-        _handlrCreator = handlrCreator;
+        _handlrCreator = new HandlrCreator();
     }
     
-    public IEnumerable<ITypeElement> FindHandlers
-    (
-        IIdentifier identifier
-    )
-    {
-        if (IsMediatrRequest(identifier))
-        {
-            return identifier.FindHandlers
-            (
-                MediatrRequestHandlerFullyQualifiedName
-            );
-        }
-        
-        if (IsMediatrNotification(identifier))
-        {
-            return identifier.FindHandlers
-            (
-                MediatrNotificationHandlerFullyQualifiedName
-            );
-        }
-
-        return [];
-    }
-    
-    public bool IsSupported
-    (
-        IIdentifier identifier
-    )
-    {
-        return IsMediatrRequest(identifier)
-               || IsMediatrNotification(identifier);
-    }
-
-    public IClassLikeDeclaration CreateHandlrFor
+    public override IClassLikeDeclaration CreateHandlrFor
     (
         IIdentifier identifier
     )
     {
         return _handlrCreator.CreateHandlrFor(identifier);
     } 
-        
-    private static bool IsMediatrRequest
-    (
-        IIdentifier identifier
-    )
-    {
-        return identifier.IsRequestTypeSupported
-        (
-            MediatrModuleName,
-            MediatrBaseRequestFullyQualifiedName
-        );
-    }
-
-    private static bool IsMediatrNotification
-    (
-        IIdentifier identifier
-    )
-    {
-        return identifier.IsRequestTypeSupported
-        (
-            MediatrModuleName,
-            MediatrNotificationFullyQualifiedName
-        );
-    }
 }

@@ -7,13 +7,13 @@ using ReSharper.MediatorPlugin.Services.MediatR;
 
 namespace ReSharper.MediatorPlugin.Services.Libraries;
 
-internal sealed class MediatorLibraryAdaptor : IMediatorLibraryAdaptor
+internal sealed class LibraryAdaptor : ILibraryAdaptor
 {
-    private readonly List<IMediatorLibrary> _mediatorLibrairies;
+    private readonly List<ILibrary> _mediatorLibrairies;
     
-    public MediatorLibraryAdaptor()
+    public LibraryAdaptor()
     {
-        _mediatorLibrairies = new List<IMediatorLibrary>
+        _mediatorLibrairies = new List<ILibrary>
         {
             new MediatorLibrary(),
             new MediatRLibrary()

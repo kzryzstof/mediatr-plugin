@@ -5,6 +5,7 @@ using JetBrains.Application.Progress;
 using JetBrains.Diagnostics;
 using JetBrains.Lifetimes;
 using JetBrains.ReSharper.Psi;
+using JetBrains.ReSharper.Psi.Caches;
 using JetBrains.ReSharper.Psi.CSharp;
 using JetBrains.ReSharper.Psi.CSharp.Conversions;
 using JetBrains.ReSharper.Psi.CSharp.Tree;
@@ -38,16 +39,14 @@ internal static class IdentifierExtensions
     public static IEnumerable<ITypeElement> FindHandlers
     (
         this IIdentifier identifier,
-        string requestHandlerType
+        ITypeElement? requestTypeElement
     )
     {
+
         IPsiServices psiServices = identifier.GetPsiServices();
-
-        //  Need to get the PSI 
-        var psiModules = psiServices.GetComponent<IPsiModules>();
-        IPsiModule? mediatrPsiModule = psiModules.GetModules().FirstOrDefault(psiModule => psiModule.Name == "MediatR");
-        ITypeElement? typeElement = TypeFactory.CreateTypeByCLRName(requestHandlerType, mediatrPsiModule).GetTypeElement();
-
+        
+        
+        
         if (identifier.Parent is not IDeclaration declaration)
             return EmptyTypeElements;
         
@@ -57,7 +56,7 @@ internal static class IdentifierExtensions
             .SingleThreadedFinder
             .FindInheritors
             (
-                typeElement, 
+                requestTypeElement, 
                 inheritorsConsumer,
                 new ProgressIndicator(Lifetime.Eternal)
             );
