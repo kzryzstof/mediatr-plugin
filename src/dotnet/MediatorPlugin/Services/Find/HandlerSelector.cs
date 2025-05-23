@@ -5,20 +5,29 @@ using JetBrains.ReSharper.Feature.Services.Navigation;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Tree;
 using ReSharper.MediatorPlugin.Diagnostics;
+using ReSharper.MediatorPlugin.Services.Libraries;
 using ReSharper.MediatorPlugin.Services.Navigation;
 
 namespace ReSharper.MediatorPlugin.Services.Find;
 
-internal sealed class HandlerSelector
+internal sealed class HandlerSelector : IHandlerSelector
 {
-    private readonly IHandlerNavigator _handlerNavigator;
-    
+    private readonly ILibraryAdaptor _libraryAdaptor;
+
     public HandlerSelector()
     {
-        _handlerNavigator = new HandlerNavigator(new MediatR.MediatR());
+        _libraryAdaptor = new LibraryAdaptor();
     }
     
-    public void Navigate
+    public bool IsMediatorRequestSupported
+    (
+        IIdentifier identifier
+    )
+    {
+        return _libraryAdaptor.IsSupported(identifier);
+    }
+    
+    public void NavigateToHandler
     (
         ISolution solution,
         ITreeNode selectedTreeNode,
@@ -33,7 +42,7 @@ internal sealed class HandlerSelector
                     
         var potentialNavigationPoints = new List<INavigationPoint>();
 
-        IEnumerable<IDeclaredElement> result = _handlerNavigator.GetHandlers
+        IEnumerable<IDeclaredElement> result = _libraryAdaptor.FindHandlers
         (
             selectedIdentifier
         );

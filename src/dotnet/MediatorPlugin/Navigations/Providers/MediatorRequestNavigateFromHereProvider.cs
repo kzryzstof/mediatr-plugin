@@ -14,7 +14,7 @@ namespace ReSharper.MediatorPlugin.Navigations.Providers;
 [ContextNavigationProvider(Instantiation.DemandAnyThreadSafe)]
 public sealed class MediatorRequestNavigateFromHereProvider : INavigateFromHereProvider
 {
-    private readonly HandlerSelector _handlerSelector = new();
+    private readonly IHandlerSelector _handlerSelector = new HandlerSelector();
 
     public IEnumerable<ContextNavigation> CreateWorkflow
     (
@@ -25,7 +25,7 @@ public sealed class MediatorRequestNavigateFromHereProvider : INavigateFromHereP
         {
             new ContextNavigation
             (
-                "Go to mediator handler",
+                "Go to handler",
                 "",
                 NavigationActionGroup.Other,
                 () =>
@@ -33,13 +33,13 @@ public sealed class MediatorRequestNavigateFromHereProvider : INavigateFromHereP
                     var solution = dataContext.GetComponent<ISolution>();
                     var selectedTreeNode = dataContext.GetSelectedTreeNode<ITreeNode>();
 
-                    if (selectedTreeNode is not IIdentifier selectedIdentifier)
+                    if (selectedTreeNode is not IIdentifier)
                     {
                         Logger.Instance.Log(LoggingLevel.VERBOSE, $"Selected element is not an instance {nameof(IIdentifier)}");
                         return;
                     }
                     
-                    _handlerSelector.Navigate
+                    _handlerSelector.NavigateToHandler
                     (
                         solution,
                         selectedTreeNode,
