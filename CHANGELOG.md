@@ -1,11 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## 25.05.22XX
+- Since MediatR is going commercial, this plugin supports for another similar Mediator library: https://github.com/martinothamar/Mediator
+
 ## 25.05.21XX
 - Support for 2025.2
 - Support for multiple handlers implementing one request
 - Support for MediatR notifications
-
 
 ## 25.03.16XX
 - Support for 2025.1

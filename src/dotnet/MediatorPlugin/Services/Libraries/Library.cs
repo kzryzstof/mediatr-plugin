@@ -20,9 +20,9 @@ internal abstract class Library : ILibrary
 
     private readonly string _requestHandlerClrName;
     private readonly string _notificationHandlerClrName;
-    
-    protected ITypeElement? RequestTypeElement { get; private set; }
-    protected ITypeElement? NotificationTypeElement { get; private set; }
+
+    private ITypeElement? _requestTypeElement;
+    private ITypeElement? _notificationTypeElement;
 
     protected Library
     (
@@ -53,7 +53,7 @@ internal abstract class Library : ILibrary
         {
             return identifier.FindHandlers
             (
-                RequestTypeElement
+                _requestTypeElement
             );
         }
         
@@ -61,7 +61,7 @@ internal abstract class Library : ILibrary
         {
             return identifier.FindHandlers
             (
-                NotificationTypeElement
+                _notificationTypeElement
             );
         }
 
@@ -86,7 +86,7 @@ internal abstract class Library : ILibrary
         IIdentifier identifier
     )
     {
-        if (RequestTypeElement is not null || NotificationTypeElement is not null)
+        if (_requestTypeElement is not null || _notificationTypeElement is not null)
             return;
         
         //  Need to get the PSI 
@@ -99,8 +99,8 @@ internal abstract class Library : ILibrary
             return;
         
         ISymbolScope symbolScope = psiServices.Symbols.GetSymbolScope(mediatrPsiModule, true, false);
-        RequestTypeElement = symbolScope.GetTypeElementByCLRName(_requestHandlerClrName);
-        NotificationTypeElement = symbolScope.GetTypeElementByCLRName(_notificationHandlerClrName);
+        _requestTypeElement = symbolScope.GetTypeElementByCLRName(_requestHandlerClrName);
+        _notificationTypeElement = symbolScope.GetTypeElementByCLRName(_notificationHandlerClrName);
     }
     
     private bool IsRequest

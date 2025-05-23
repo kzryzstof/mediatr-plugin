@@ -25,7 +25,7 @@ public sealed class MediatorRequestNavigateFromHereProvider : INavigateFromHereP
         {
             new ContextNavigation
             (
-                "Go to mediator handler",
+                "Go to handler",
                 "",
                 NavigationActionGroup.Other,
                 () =>
@@ -33,7 +33,7 @@ public sealed class MediatorRequestNavigateFromHereProvider : INavigateFromHereP
                     var solution = dataContext.GetComponent<ISolution>();
                     var selectedTreeNode = dataContext.GetSelectedTreeNode<ITreeNode>();
 
-                    if (selectedTreeNode is not IIdentifier selectedIdentifier)
+                    if (selectedTreeNode is not IIdentifier)
                     {
                         Logger.Instance.Log(LoggingLevel.VERBOSE, $"Selected element is not an instance {nameof(IIdentifier)}");
                         return;

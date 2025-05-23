@@ -5,18 +5,14 @@ using JetBrains.Application.Progress;
 using JetBrains.Diagnostics;
 using JetBrains.Lifetimes;
 using JetBrains.ReSharper.Psi;
-using JetBrains.ReSharper.Psi.Caches;
 using JetBrains.ReSharper.Psi.CSharp;
 using JetBrains.ReSharper.Psi.CSharp.Conversions;
 using JetBrains.ReSharper.Psi.CSharp.Tree;
-using JetBrains.ReSharper.Psi.Impl.CodeStyle;
 using JetBrains.ReSharper.Psi.Modules;
-using JetBrains.ReSharper.Psi.Resolve;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.ReSharper.Psi.Util;
 using ReSharper.MediatorPlugin.Diagnostics;
 using ReSharper.MediatorPlugin.ReSharper.Psi.Search;
-using Xunit;
 
 namespace ReSharper.MediatorPlugin.ReSharper.Psi.Tree;
 
@@ -44,8 +40,6 @@ internal static class IdentifierExtensions
     {
 
         IPsiServices psiServices = identifier.GetPsiServices();
-        
-        
         
         if (identifier.Parent is not IDeclaration declaration)
             return EmptyTypeElements;
@@ -168,7 +162,7 @@ internal static class IdentifierExtensions
                 .Any(userTypeUsage =>
                 {
                     IDeclaredType declaredType = userTypeUsage.ScalarTypeName.NameIdentifier.ToDeclaredType();
-                    string? fullName = declaredType.GetClrName().FullName;
+                    string fullName = declaredType.GetClrName().FullName;
                         
                     Logger.Instance.Log(LoggingLevel.VERBOSE, $"--≥ '{fullName}'");
                     return string.Equals(fullName, selectedFullTypeName, StringComparison.CurrentCultureIgnoreCase);

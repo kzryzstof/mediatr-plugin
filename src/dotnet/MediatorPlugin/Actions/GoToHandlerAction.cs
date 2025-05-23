@@ -16,18 +16,18 @@ namespace ReSharper.MediatorPlugin.Actions;
 
 [Action
 (
-    "GoToHandlrAction",
+    "GoToHandlerAction",
     "Go to Handler",
     IdeaShortcuts = new [] {"Alt+H"}, 
     VsShortcuts = new [] {"Alt+H"}
 )]
-public class GoToHandlrAction : IActionWithExecuteRequirement, IExecutableAction, IInsertLast<NavigateMenu>
+public class GoToHandlerAction : IActionWithExecuteRequirement, IExecutableAction, IInsertLast<NavigateMenu>
 {
     private readonly IHandlerSelector _handlerSelector;
 
-    public GoToHandlrAction()
+    public GoToHandlerAction()
     {
-        Logger.Instance.Log(LoggingLevel.VERBOSE, "GoToHandlrAction instance has been created");
+        Logger.Instance.Log(LoggingLevel.VERBOSE, "GoToHandlerAction instance has been created");
 
         _handlerSelector = new HandlerSelector();
     }
@@ -43,7 +43,7 @@ public class GoToHandlrAction : IActionWithExecuteRequirement, IExecutableAction
         var solution = context.GetComponent<ISolution>();
         var selectedTreeNode = context.GetSelectedTreeNode<ITreeNode>();
 
-        if (selectedTreeNode is not IIdentifier selectedIdentifier)
+        if (selectedTreeNode is not IIdentifier)
         {
             Logger.Instance.Log(LoggingLevel.VERBOSE, $"Selected element is not an instance {nameof(IIdentifier)}");
             return;
@@ -74,10 +74,10 @@ public class GoToHandlrAction : IActionWithExecuteRequirement, IExecutableAction
     {
         Guard.ThrowIfIsNull(context, nameof(context));
 
-        return IsMediatrRequestSelected(context);
+        return IsMediatorRequestOrNotificationSelected(context);
     }
 
-    private bool IsMediatrRequestSelected
+    private bool IsMediatorRequestOrNotificationSelected
     (
         IDataContext context
     )

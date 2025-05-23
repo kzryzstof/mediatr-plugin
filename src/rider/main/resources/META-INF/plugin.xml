@@ -17,8 +17,8 @@
            text="Mediator extensions" 
            popup="true">
       <add-to-group group-id="GoToMenu" />
-      <action id="ReSharper.MediatorPlugin.Actions.GoToHandlrAction"
-              class="ca.nosuchcompany.rider.plugins.mediatr.GoToHandlrAction">
+      <action id="ReSharper.MediatorPlugin.Actions.GoToHandlerAction"
+              class="ca.nosuchcompany.rider.plugins.mediatr.GoToHandlerAction">
         <keyboard-shortcut keymap="$default" first-keystroke="alt H" replace-all="true" />
       </action>
     </group>
